@@ -69,3 +69,12 @@ void tankDrive(){
 	leftDrive(vexRT(Ch3));
 	rightDrive(vexRT(Ch2));
 }
+
+void autoDrive(int voltage) {
+	int turn = 0;
+	if(abs(voltage) > 15){
+		turn = getGyro() * 4;
+	}
+	motor(LD1) = motor(LD2) = motor(LD3) = voltage - turn;
+	motor(RD1)  = motor(RD2) = motor(RD3) = voltage + turn;
+}

@@ -15,13 +15,13 @@ int disterror, differror, distintegral, diffintegral, distderivative, diffderiva
 
 //TODO: Tune these!!!!
 //PLACEHOLDER VALUES LINEAR DRIVE
-float distP = .5;
-float distI = 0.025;
-float distD = 0.2;
+float distP = .3;
+float distI = 0.00025;
+float distD = 1;
 //PLACEHOLDER VALUES STEADY DRIVE
-float diffP = 1;
-float diffI = 0.05;
-float diffD = 0.2;
+float diffP = .8;
+float diffI = 0.005;
+float diffD = 1.25;
 
 //////////////////////////////////////////////////////////* DRIVE PID TASK *//////////////////////////////////////////////////////////////////
 
