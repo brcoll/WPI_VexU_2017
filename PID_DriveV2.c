@@ -2,7 +2,7 @@
 bool isDriving = false;
 bool isTurning = false;
 bool isWall = false;
-int wallPower = 100;
+int wallPower = 80;
 float linearDistance = 0;
 float turnAng = 0;
 int maxspeed = MAX_VOLTAGE;
@@ -241,7 +241,7 @@ task PID_Drive(){
 		}
 		while(isWall){
 			disterror = getAvgEncoder();
-			differror = getGyro(); //Calculate difference error
+			differror = 0; //getGyro(); //Calculate difference error
 
 			distderivative = disterror - prevdisterror; //Calculate distance derivative
 			diffderivative = differror - prevdifferror; //Calculate difference derivative
@@ -252,12 +252,12 @@ task PID_Drive(){
 			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
 			if(wallForward){
-			motor[FLD] = motor[BLD] = wallPower - diffspeed; //Set motor values
-			motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
-		} else {
-			motor[FLD] = motor[BLD] = -wallPower - diffspeed; //Set motor values
-			motor[FRD] = motor[BRD] = -wallPower + diffspeed; //Set motor values
-		}
+				motor[FLD] = motor[BLD] = wallPower - diffspeed; //Set motor values
+				motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
+			} else {
+				motor[FLD] = motor[BLD] = -wallPower - diffspeed; //Set motor values
+				motor[FRD] = motor[BRD] = -wallPower + diffspeed; //Set motor values
+			}
 
 			//When derivative error is less than certain value begin latching
 			//If latched for more than certain time set hitWall to true
@@ -265,7 +265,7 @@ task PID_Drive(){
 				lastLatched = nPgmTime;
 				hitWall = false;
 				} else {
-				hitWall =  nPgmTime - lastLatched > 375; //OLD 250
+				hitWall =  nPgmTime - lastLatched > 500; //OLD 250
 			}
 
 			//If hitWall and beginning time has passed stop motors and reset
@@ -308,4 +308,3 @@ void driveWall(bool forward){
 		wait1Msec(20);
 	}
 }
-
