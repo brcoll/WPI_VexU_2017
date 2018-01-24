@@ -2,7 +2,7 @@
 bool isDriving = false;
 bool isTurning = false;
 bool isWall = false;
-int wallPower = -100;
+int wallPower = 100;
 float linearDistance = 0;
 float turnAng = 0;
 int maxspeed = MAX_VOLTAGE;
@@ -25,7 +25,7 @@ int DGAF_turnErrorThreshold = 4;
 float disterror, differror, distintegral, diffintegral,  distspeed, diffspeed, direction = 0;
 float distderivative, diffderivative, prevdisterror, prevdifferror = 0;
 float disterror_Stuck, distderivative_Stuck, prevdisterror_Stuck =0;
-bool hitWall, hitSomething, goingBack = false;
+bool hitWall, hitSomething, goingBack = false, wallForward = false;
 int lastLatched, lastLatched_Stuck, startingTime, wallTime = 0;
 
 //LINEAR DRIVE GAINS
@@ -251,8 +251,13 @@ task PID_Drive(){
 
 			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
+			if(wallForward){
 			motor[FLD] = motor[BLD] = wallPower - diffspeed; //Set motor values
-			  motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
+			motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
+		} else {
+			motor[FLD] = motor[BLD] = -wallPower - diffspeed; //Set motor values
+			motor[FRD] = motor[BRD] = -wallPower + diffspeed; //Set motor values
+		}
 
 			//When derivative error is less than certain value begin latching
 			//If latched for more than certain time set hitWall to true
@@ -271,7 +276,6 @@ task PID_Drive(){
 			}
 			wait1Msec(20);
 		}
-
 		wait1Msec(20);
 	}
 }
@@ -295,3 +299,13 @@ void turnAngle(float ang, bool tolerance = false){
 		wait1Msec(20);
 	}
 }
+
+void driveWall(bool forward){
+	initPID(false);
+	isWall=true;
+	wallForward = forward;
+	while(isWall){
+		wait1Msec(20);
+	}
+}
+

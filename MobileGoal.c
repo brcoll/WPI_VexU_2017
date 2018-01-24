@@ -6,6 +6,7 @@ int mg_bottomSetpoint = 680;
 float mg_P = 1;
 
 int mg_setpoint,mg_error, mg_output;
+bool mg_done = false;
 
 void mobileGoal(int voltage){
 	motor(LMG) = motor(RMG) = voltage;
@@ -32,10 +33,13 @@ task mg_intake()
 
 		if((SensorValue[upperLimit]) && mg_setpoint == mg_topSetpoint){
 			mg_output = 0;
-		}
-		if((SensorValue[lowerLimit] && !SensorValue[upperLimit]) && mg_setpoint == mg_bottomSetpoint){
+			mg_done = true;
+		} else if((SensorValue[lowerLimit] && !SensorValue[upperLimit]) && mg_setpoint == mg_bottomSetpoint){
 			mg_output = 0;
-		}
+			mg_done = true;
+		} else {
+		  mg_done=false;
+  	}
 
 		mobileGoal(mg_output);
 
@@ -49,4 +53,16 @@ void mg_up(){
 
 void mg_down(){
 	mg_setpoint = mg_bottomSetpoint;
+}
+
+void mg_upHold(){
+	while(!mg_done){
+		mg_setpoint = mg_topSetpoint;
+	}
+}
+
+void mg_downHold(){
+	while(!mg_done){
+	mg_setpoint = mg_bottomSetpoint;
+	}
 }
