@@ -35,8 +35,8 @@
 #include "Vex_Competition_Includes.c"
 #include "Drive.c"
 #include "PID_DriveV2.c"
-#include "Auto.c"
 #include "MobileGoal.c"
+#include "Auto.c"
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -157,10 +157,9 @@ task usercontrol()
 			motor[FB] = 0;
 		}
 
-		//if (vexRT[Btn7L]){
-		//	testDrive();
-		//	delay(500);
-		//}
+		if (vexRT[Btn7L]){
+			simple_auto(false);
+		}
 		if(vexRT[Btn7D]){
 			resetEncoders();
 		}

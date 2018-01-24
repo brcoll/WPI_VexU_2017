@@ -5,7 +5,7 @@ int mg_bottomSetpoint = 680;
 
 float mg_P = 1;
 
-int mg_setpoint,mg_error, mg_output;
+int mg_setpoint, mg_error, mg_output;
 bool mg_done = false;
 
 void mobileGoal(int voltage){
@@ -14,6 +14,7 @@ void mobileGoal(int voltage){
 
 task mg_intake()
 {
+	mg_setpoint = mg_topSetpoint;
 	while(true){
 
 
@@ -56,12 +57,14 @@ void mg_down(){
 }
 
 void mg_upHold(){
+	mg_done = false;
 	while(!mg_done){
 		mg_setpoint = mg_topSetpoint;
 	}
 }
 
 void mg_downHold(){
+	mg_done = false;
 	while(!mg_done){
 	mg_setpoint = mg_bottomSetpoint;
 	}
