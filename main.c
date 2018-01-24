@@ -1,3 +1,4 @@
+#pragma config(Sensor, in1,    mg_pot,         sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  upperLimit,     sensorTouch)
 #pragma config(Sensor, dgtl2,  lowerLimit,     sensorTouch)
 #pragma config(Sensor, dgtl3,  leftEncoder,    sensorQuadEncoder)
@@ -33,8 +34,9 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Drive.c"
-#include "PID_Drive.c"
+#include "PID_DriveV2.c"
 #include "Auto.c"
+#include "MobileGoal.c"
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -70,7 +72,7 @@ task autonomous()
 	// ..........................................................................
 	// Insert user code here.
 	// ..........................................................................
-	driveDist(12);
+	driveDistance(24);
 
 	delay(10000);
 	rightDrive(127);
@@ -80,9 +82,7 @@ task autonomous()
 	leftDrive(0);
 }
 
-void mobileGoal(int voltage){
-	motor(LMG) = motor(RMG) = voltage;
-}
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -93,26 +93,41 @@ void mobileGoal(int voltage){
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
+float aaaGyro, aaaLeftEnc, aaaRightEnc, aaapot;
 task usercontrol()
 {
 	// User control code here, inside the loop
 
 	startTask(PID_Drive);
+	startTask(mg_intake);
 	clearTimer(T1);
 
 	while (true)
 	{
-		arcadeDrive();
+		aaaPot = SensorValue(mg_pot);
+		aaaGyro = getGyro();
+		aaaLeftEnc = SensorValue(leftEncoder);
+		aaaRightEnc = SensorValue(rightEncoder);
+		if(vexRT(Btn7L)){
+			driveDistance(24);
+			} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
+			turnAngle(90);
+			} else {
+			arcadeDrive();
+			isDriving = false;
+			isTurning = false;
+		}
 
 		if(vexRT(Btn6U) && (!SensorValue[upperLimit])){
-			mobileGoal(127);
+			//mobileGoal(127);
+			mg_up();
 		}
 		else if(vexRT(Btn6D) && ( !SensorValue[lowerLimit] || SensorValue[upperLimit])){
-			mobileGoal(-127);
+			//mobileGoal(-127);
+			mg_down();
 		}
 		else{
-			mobileGoal(0);
+			//mobileGoal(0);
 		}
 
 		if(vexRT[Btn5U]){
@@ -142,11 +157,11 @@ task usercontrol()
 			motor[FB] = 0;
 		}
 
-		if (vexRT[Btn7L]){
-			testDrive();
-			delay(500);
-		}
-		else if(vexRT[Btn7D]){
+		//if (vexRT[Btn7L]){
+		//	testDrive();
+		//	delay(500);
+		//}
+		if(vexRT[Btn7D]){
 			resetEncoders();
 		}
 

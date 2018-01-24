@@ -2,7 +2,7 @@
 #include "main.c"
 #else
 void testDrive(){
-		driveDist(12);
+		driveDistance(12);
 }
 
 

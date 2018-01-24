@@ -33,7 +33,7 @@ float getRightEncoder() {
 }
 
 float getGyro(){
-	return (SensorValue(leftEncoder) - SensorValue(rightEncoder)) / 8.92;
+	return (SensorValue(leftEncoder) - SensorValue(rightEncoder)) * 0.239;
 }
 
 float getAvgEncoder(){
@@ -75,6 +75,6 @@ void autoDrive(int voltage) {
 	if(abs(voltage) > 15){
 		turn = getGyro() * 4;
 	}
-	motor(LD1) = motor(LD2) = motor(LD3) = voltage - turn;
-	motor(RD1)  = motor(RD2) = motor(RD3) = voltage + turn;
+	//motor(LD1) = motor(LD2) = motor(LD3) = voltage - turn;
+	//motor(RD1)  = motor(RD2) = motor(RD3) = voltage + turn;
 }
