@@ -43,6 +43,7 @@ task mg_intake()
   	}
 
 		mobileGoal(mg_output);
+		wait1Msec(20);
 
 
 	}

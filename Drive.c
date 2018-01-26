@@ -10,15 +10,6 @@ bool driveDone = false;
 bool turnDone = false;
 
 
-int removeDeadband(int input) {
-	if (abs(input) > 20) {
-		return input;
-	}
-	else {
-		return 0;
-	}
-}
-
 void resetEncoders() {
 	SensorValue(leftEncoder) = 0;
 	SensorValue(rightEncoder) = 0;
