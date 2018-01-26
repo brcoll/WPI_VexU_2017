@@ -3,7 +3,7 @@ int fb_hold_setpoint = 1700;
 int fb_score_setpoint = 2600;
 
 float fb_p = 0.15;
-int fb_tolerance = 20;
+int fb_tolerance = 200;
 int fb_setpoint, fb_error, fb_output;
 bool fb_done = false;
 
@@ -110,6 +110,10 @@ task lift_intake_task(){
 		fb_output = (0.5*(fb_error * fb_P)) + (0.5*fb_output);
 
 		fb_output = ranged_output(fb_output);
+
+		if((fb_setpoint == fb_hold_setpoint || fb_setpoint == fb_score_setpoint) && abs(fb_error) < fb_tolerance){
+			fb_output = 0;
+		}
 
 		fb_done = abs(fb_error) < fb_tolerance;
 
