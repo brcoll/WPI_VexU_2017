@@ -7,6 +7,7 @@ float mg_P = 1;
 
 int mg_setpoint, mg_error, mg_output;
 bool mg_done = false;
+bool at_loader;
 
 void mobileGoal(int voltage){
 	motor(LMG) = motor(RMG) = voltage;
@@ -42,6 +43,13 @@ task mg_intake()
 		  mg_done=false;
   	}
 
+  	bool lift_is_clear = goal_moving(abs(mg_output) > 50);
+  	if(abs(mg_output) > 50 && !lift_is_clear){
+  		mg_output = 0;
+  	}
+  	else {
+  		goal_stationary();
+  	}
 		mobileGoal(mg_output);
 		wait1Msec(20);
 

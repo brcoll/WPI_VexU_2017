@@ -133,13 +133,19 @@ task usercontrol()
 		}
 
 		if(vexRT[Btn5U]){
-			raise_cone();
+			//raise_cone();
+			set_lift_mode(lm_score);
 		}
 		else if(vexRT[Btn5D]){
-			pickup_cone();
+			//pickup_cone();
+			set_lift_mode(lm_pickup);
+		}
+		else if(vexRT[Btn8U]){
+			set_lift_mode(lm_hold);
 		}
 		else {
-			reset_lift();
+			//reset_lift();
+			set_lift_mode(lm_home);
 		}
 
 		if(vexRT[Btn8U]){
@@ -152,7 +158,13 @@ task usercontrol()
 			//run4Bar(0);
 		}
 
-		if (vexRT[Btn7L]){
+		if(vexRT[Btn7L]){
+			at_loader = true;
+		}
+		else if(vexRT[Btn7D]){
+			at_loader = true;
+		}
+		if (vexRT[Btn7R]){
 			simple_auto(false);
 		}
 		if(vexRT[Btn7D]){
