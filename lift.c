@@ -33,6 +33,9 @@ float in_to_pot = 62;
 
 int beam_offset = 200;
 
+bool shouldOpen = false;
+
+
 enum lift_mode
 {
 	lm_home,
@@ -80,8 +83,11 @@ void set_fb(int new_setpoint){
 }
 
 void set_intake(bool open){
+	if(intake_isAuto){
+		open = false;
+	}
 	if (open != intake_state){
-		sensorValue[intake] = open;
+		SensorValue[intake] = open;
 		intake_state = open;
 	}
 }
@@ -122,6 +128,7 @@ void set_lift_mode(lift_mode new_mode){
 			break;
 
 			case lm_score:
+			intake_isAuto = false;
 			set_lift_state(ls_raising);
 			break;
 
@@ -214,6 +221,10 @@ task lift_intake_task(){
 			case ls_homing:
 			set_lift(lift_bottom_setpoint);
 			if (lift_done){
+				if(shouldOpen){
+					set_intake(true);
+					shouldOpen = false;
+				}
 				set_fb(fb_hold_setpoint);
 				if(fb_done && active_lift_mode == lm_pickup){
 					set_lift_state(ls_picking_up);
@@ -243,7 +254,8 @@ task lift_intake_task(){
 				}
 				else{
 					set_lift_state(ls_homing);
-					set_intake(true);
+					shouldOpen = true;
+					//set_intake(true);
 				}
 			}
 			break;

@@ -3,6 +3,7 @@ void get_straight_mg(int offset = 0){
 	delay(500);
 	driveDistance(47 - offset);
 	mg_upHold();
+	set_lift_mode(lm_score);
 	driveDistance(-42);
 }
 

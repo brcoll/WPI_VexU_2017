@@ -33,6 +33,8 @@
 
 #define MAX_VOLTAGE 127
 
+bool intake_isAuto = true;
+
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Helpers.c"
@@ -69,17 +71,23 @@ void pre_auton()
 
 task autonomous()
 {
+		startTask(PID_Drive);
+	startTask(mg_intake);
+	startTask(lift_intake_task);
 	// ..........................................................................
 	// Insert user code here.
 	// ..........................................................................
-	driveDistance(24);
 
-	delay(10000);
-	rightDrive(127);
-	leftDrive(127);
-	delay(1000);
-	rightDrive(0);
-	leftDrive(0);
+	simple_auto(false);
+
+	//driveDistance(24);
+
+	//delay(10000);
+	//rightDrive(127);
+	//leftDrive(127);
+	//delay(1000);
+	//rightDrive(0);
+	//leftDrive(0);
 }
 
 
@@ -97,11 +105,11 @@ float aaaGyro, aaaLeftEnc, aaaRightEnc, aaapot;
 task usercontrol()
 {
 	// User control code here, inside the loop
-
 	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
 
+	intake_isAuto = false;
 
 	while (true)
 	{
@@ -113,7 +121,7 @@ task usercontrol()
 		if(vexRT(Btn7L)){
 			driveDistance(24);
 			} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
-			turnAngle(90);
+			//turnAngle(90);
 			} else {
 			arcadeDrive();
 			isDriving = false;
