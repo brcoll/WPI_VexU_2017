@@ -47,13 +47,8 @@ task mg_intake()
   	if(abs(mg_output) > 50 && !lift_is_clear){
   		mg_output = 0;
   	}
-  	else {
-  		goal_stationary();
-  	}
 		mobileGoal(mg_output);
 		wait1Msec(20);
-
-
 	}
 }
 

@@ -1,4 +1,4 @@
-int fb_pickup_setpoint = 620;
+int fb_pickup_setpoint = 580;
 int fb_hold_setpoint = 1700;
 int fb_score_setpoint = 2600;
 
@@ -34,6 +34,8 @@ float in_to_pot = 62;
 int beam_offset = 200;
 
 bool shouldOpen = false;
+
+bool intake_enabled = false;
 
 
 enum lift_mode
@@ -83,13 +85,21 @@ void set_fb(int new_setpoint){
 }
 
 void set_intake(bool open){
-	if(intake_isAuto){
+	if(!intake_enabled){
 		open = false;
 	}
 	if (open != intake_state){
 		SensorValue[intake] = open;
 		intake_state = open;
 	}
+}
+
+void enable_intake(){
+	intake_enabled = true;
+}
+
+void disable_intake(){
+	intake_enabled = false;
 }
 
 void set_lift_state(lift_state new_state){
@@ -128,7 +138,6 @@ void set_lift_mode(lift_mode new_mode){
 			break;
 
 			case lm_score:
-			intake_isAuto = false;
 			set_lift_state(ls_raising);
 			break;
 
@@ -143,15 +152,17 @@ void set_lift_mode(lift_mode new_mode){
 	}
 }
 
-bool wait_for_lift(long timeout = 10000){
+bool wait_for_lift(long timeout = 5000){
 	clearTimer(T1);
 	fb_done = false;
 	lift_done = false;
-	while(!fb_done || !lift_done){
-		if (time1[T1] < timeout){
+	bool passed_last;
+	while(!fb_done || !lift_done || !passed_last){
+		if (time1[T1] > timeout){
 			lift_enabled = false;
 			return false;
 		}
+		passed_last = fb_done && lift_done;
 		wait1Msec(20);
 	}
 	return true;
@@ -245,7 +256,7 @@ task lift_intake_task(){
 			if(fb_done){
 				if(active_lift_mode == lm_hold){
 					set_lift_state(ls_holding);
-					set_lift(SensorValue[lift_pot] - 4 * in_to_pot);
+					set_lift(SensorValue[lift_pot] - 7 * in_to_pot);
 				}
 				else if(active_lift_mode == lm_clear){
 					set_lift_state(ls_clearing);

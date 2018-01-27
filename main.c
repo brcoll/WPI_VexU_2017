@@ -33,8 +33,6 @@
 
 #define MAX_VOLTAGE 127
 
-bool intake_isAuto = true;
-
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Helpers.c"
@@ -71,12 +69,14 @@ void pre_auton()
 
 task autonomous()
 {
+	disable_intake();
 		startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
 	// ..........................................................................
 	// Insert user code here.
 	// ..........................................................................
+
 
 	simple_auto(false);
 
@@ -109,7 +109,7 @@ task usercontrol()
 	startTask(mg_intake);
 	startTask(lift_intake_task);
 
-	intake_isAuto = false;
+	enable_intake();
 
 	while (true)
 	{

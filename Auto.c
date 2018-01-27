@@ -1,8 +1,20 @@
+void get_cone(int n_cones = 1){
+	for (int i = 1; i <= n_cones; i++){
+		driveDistance(12);
+		wait_for_lift();
+		set_lift_mode(lm_pickup);
+		wait_for_lift();
+		set_lift_mode(lm_score);
+	}
+	driveDistance(-12 * n_cones);
+}
+
 void get_straight_mg(int offset = 0){
 	mg_down();
 	delay(500);
 	driveDistance(47 - offset);
 	mg_upHold();
+	enable_intake();
 	set_lift_mode(lm_score);
 	driveDistance(-42);
 }
@@ -31,6 +43,7 @@ void deliver_to_10(){
 void simple_auto(bool isLeft){
 	// 1 for left, -1 for right
 	int dir = 2 * isLeft - 1;
+	delay(300);
 	get_straight_mg();
 	move_center(dir);
 	deliver_to_20();
