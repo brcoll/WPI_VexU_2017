@@ -70,7 +70,7 @@ void pre_auton()
 task autonomous()
 {
 	disable_intake();
-		startTask(PID_Drive);
+	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
 	// ..........................................................................
@@ -78,7 +78,7 @@ task autonomous()
 	// ..........................................................................
 
 
-	simple_auto(false);
+	simple_auto(true);
 
 	//driveDistance(24);
 

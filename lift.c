@@ -9,7 +9,8 @@ bool fb_done = false;
 
 int lift_bottom_setpoint = 1230;
 int lift_top_setpoint = 2800;
-int lift_up_threshold = 1290;
+int lift_up_threshold = 1500;
+int lift_drop_point = 1400;
 int lift_down_power = 20;
 
 float lift_p = 0.4;
@@ -31,7 +32,7 @@ bool is_clear = false;
 
 float in_to_pot = 62;
 
-int beam_offset = 200;
+int beam_offset = 130;
 
 bool shouldOpen = false;
 
@@ -231,11 +232,11 @@ task lift_intake_task(){
 
 			case ls_homing:
 			set_lift(lift_bottom_setpoint);
+			if(shouldOpen && SensorValue[lift_pot] < lift_drop_point){
+				set_intake(true);
+				shouldOpen = false;
+			}
 			if (lift_done){
-				if(shouldOpen){
-					set_intake(true);
-					shouldOpen = false;
-				}
 				set_fb(fb_hold_setpoint);
 				if(fb_done && active_lift_mode == lm_pickup){
 					set_lift_state(ls_picking_up);
@@ -256,7 +257,7 @@ task lift_intake_task(){
 			if(fb_done){
 				if(active_lift_mode == lm_hold){
 					set_lift_state(ls_holding);
-					set_lift(SensorValue[lift_pot] - 7 * in_to_pot);
+					set_lift(SensorValue[lift_pot] - 5 * in_to_pot);
 				}
 				else if(active_lift_mode == lm_clear){
 					set_lift_state(ls_clearing);
@@ -284,6 +285,9 @@ task lift_intake_task(){
 
 			case ls_clearing:
 			set_intake(true);
+			if(lift_setpoint < 2200){
+				set_lift(2200);
+			}
 			break;
 		}
 
