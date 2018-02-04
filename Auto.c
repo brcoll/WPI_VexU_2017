@@ -4,13 +4,16 @@ void get_cone(int n_cones = 1){
 		driveDistance(12);
 		wait_for_lift();
 		set_lift_mode(lm_pickup);
+		//wait_for_lift();
+		delay(800);
+		set_lift_mode(lm_home);
 		wait_for_lift();
 		set_lift_mode(lm_score);
 	}
 	driveDistance((-12 * n_cones) -4);
 }
 
-void get_straight_mg(int offset = 0){
+void get_straight_mg(int cones, int offset = 0){
 	mg_down();
 	delay(500);
 	driveDistance(49 - offset);
@@ -18,7 +21,8 @@ void get_straight_mg(int offset = 0){
 	enable_intake();
 	set_lift_mode(lm_score);
 	delay(1500);
-	//get_cone(2);
+	if(cones)
+		get_cone(cones);
 	driveDistance(-44);
 }
 
@@ -47,7 +51,7 @@ void simple_auto(bool isLeft){
 	// 1 for left, -1 for right
 	int dir = 2 * isLeft - 1;
 	delay(300);
-	get_straight_mg();
+	get_straight_mg(2);
 	move_center(dir);
 	deliver_to_20();
 	turnAngle(90*dir);
@@ -57,7 +61,7 @@ void simple_auto(bool isLeft){
 	driveDistance(7);
 	delay(500);
 	turnAngle(95*dir);
-	get_straight_mg(8);
+	get_straight_mg(1,8);
 	driveDistance(-5);
 	move_center(-1*dir);
 	deliver_to_10();
@@ -67,7 +71,7 @@ void bs_auto(bool isLeft){
 	// 1 for left, -1 for right
 	int dir = 2 * isLeft - 1;
 	delay(300);
-	get_straight_mg();
+	get_straight_mg(2);
 	move_center(dir);
 	deliver_to_20();
 	turnAngle(90*dir);

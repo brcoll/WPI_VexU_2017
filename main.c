@@ -78,7 +78,7 @@ task autonomous()
 	// ..........................................................................
 
 
-	simple_auto(true);
+	simple_auto(false);
 
 	//driveDistance(24);
 
