@@ -69,7 +69,7 @@ float turnD = 30; // OLD 80
 //}
 
 void initPID(bool tight = false){
-	resetEncoders();
+	//resetEncoders();
 	prevdisterror = 0;
 	prevdifferror = 0;
 	distintegral = 0;
@@ -118,8 +118,10 @@ task PID_Drive(){
 		//Runs the PID loop while isDriving is true and sets isDriving to false when done.
 		while(isDriving){
 			// Calculate both linear and difference errors
-			disterror = linearDistance - getAvgEncoder(); //Calculate distance error
-			differror = getGyro(); //Calculate difference error
+			//disterror = linearDistance - getAvgEncoder(); //Calculate distance error
+			disterror = get_drive_error();
+			//differror = getGyro(); //Calculate difference error
+			differror = 0;//get_turn_error();
 
 			// Find the integral ONLY if within controllable range AND if the distance error is not equal to zero
 			if(abs(distderivative) < 0.375 && disterror != 0){
@@ -186,8 +188,9 @@ task PID_Drive(){
 		//Runs the PID loop while isTurning is true and sets isTurning to false when done. Turns to the right by default for positive values.
 		while(isTurning){
 
-			disterror = turnAng - getGyro(); //Calculate distance error
+			//disterror = turnAng - getGyro(); //Calculate distance error
 			//differror = getLeftEncoder() - -1*getRightEncoder(); //Calculate difference error
+			disterror = get_turn_error();
 
 			// Find the integral ONLY if within controllable range AND if the distance error is not equal to zero
 			if( abs(disterror) < 6 && disterror != 0){
@@ -284,7 +287,8 @@ task PID_Drive(){
 //Drives given distance in inches
 void driveDistance(float dist, bool tolerance = false){
 	initPID(tolerance);
-	linearDistance = dist;
+	//linearDistance = dist;
+	advance_drive_target(dist);
 	isDriving = true;
 	while(isDriving){
 		wait1Msec(20);
@@ -293,7 +297,8 @@ void driveDistance(float dist, bool tolerance = false){
 //Turns given angle in degrees (right = +)
 void turnAngle(float ang, bool tolerance = false){
 	initPID(tolerance);
-	turnAng = ang;
+	//turnAng = ang;
+	advance_turn_target(ang);
 	isTurning = true;
 	while(isTurning){
 		wait1Msec(20);

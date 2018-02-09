@@ -293,7 +293,7 @@ task lift_intake_task(){
 
 
 		fb_error = fb_setpoint - SensorValue(fb_pot);
-		fb_output = (0.5*(fb_error * fb_P)) + (0.5*fb_output);
+		fb_output = (0.5*(fb_error * fb_p)) + (0.5*fb_output);
 
 		fb_output = ranged_output(fb_output);
 

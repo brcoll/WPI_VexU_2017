@@ -71,6 +71,7 @@ void pre_auton()
 task autonomous()
 {
 	disable_intake();
+	startTask(Odometry);
 	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
@@ -121,10 +122,12 @@ task usercontrol()
 		aaaRightEnc = SensorValue(rightEncoder);
 		lift_enabled = true;
 		if(vexRT(Btn7L)){
-			driveDistance(24);
-			} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
+			//driveDistance(24);
+			turnAngle(90);
+		} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
 			//turnAngle(90);
-			} else {
+			driveDistance(12);
+		} else {
 			arcadeDrive();
 			isDriving = false;
 			isTurning = false;
@@ -175,10 +178,13 @@ task usercontrol()
 			at_loader = true;
 		}
 		if (vexRT[Btn7R]){
-			simple_auto(false);
+			//simple_auto(false);
+			driveDistance(12);
+			//turnAngle(90);
 		}
 		if(vexRT[Btn7D]){
-			resetEncoders();
+			//resetEncoders();
+			zero_odom();
 		}
 
 		// This is the main execution loop for the user control program.
