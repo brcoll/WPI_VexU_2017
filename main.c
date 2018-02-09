@@ -36,6 +36,7 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Helpers.c"
+#include "Odom.c"
 #include "Drive.c"
 #include "PID_DriveV2.c"
 #include "lift.c"
@@ -105,6 +106,7 @@ float aaaGyro, aaaLeftEnc, aaaRightEnc, aaapot;
 task usercontrol()
 {
 	// User control code here, inside the loop
+	startTask(Odometry);
 	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
