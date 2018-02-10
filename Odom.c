@@ -77,7 +77,7 @@ float proj_dist(point input, float theta){
 }
 
 float get_coord_error(point target, point position){
-	return proj_dist(target, position.p_t) - proj_dist(position, position.p_t);
+	return proj_dist(target, target.p_t) - proj_dist(position, target.p_t);
 }
 
 void add_dist(point &position, float dist){

@@ -121,7 +121,7 @@ task PID_Drive(){
 			//disterror = linearDistance - getAvgEncoder(); //Calculate distance error
 			disterror = get_drive_error();
 			//differror = getGyro(); //Calculate difference error
-			differror = 0;//get_turn_error();
+			differror = -get_turn_error();
 
 			// Find the integral ONLY if within controllable range AND if the distance error is not equal to zero
 			if(abs(distderivative) < 0.375 && disterror != 0){
