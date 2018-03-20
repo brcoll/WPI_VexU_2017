@@ -64,6 +64,12 @@ task Odometry(){
 	}
 }
 
+void set_target(float t_t, float t_x, float t_y){
+	target_p.p_t = t_t;
+	target_p.p_x = t_x;
+	target_p.p_y = t_y;
+}
+
 float angle_diff(float ang1, float ang2){
 	float diff = ang1 - ang2;
 	while (diff > 180) diff -= 360;

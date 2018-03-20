@@ -117,11 +117,12 @@ task usercontrol()
 
 		if(vexRT(Btn7L)){
 			//driveDistance(24);
-			point first_goal;
-			first_goal.p_x = 12;
-			first_goal.p_y = 100;
-			first_goal.p_t = 0;
-			splineDest(first_goal);
+			turnAngle(90);
+			//point first_goal;
+			//first_goal.p_x = 12;
+			//first_goal.p_y = 100;
+			//first_goal.p_t = 0;
+			//splineDest(first_goal);
 		} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
 			//turnAngle(90);
 			driveDistance(-16);
@@ -129,7 +130,7 @@ task usercontrol()
 			turnAngle(0);
 		} else if (vexRT(Btn7D) && abs(vexRT(Ch1)) < 25){
 			//turnAngle(90);
-			set_odom(-135, 16, 30);
+			set_odom(83, 7, 50);
 			worst_bat = nImmediateBatteryLevel;
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
 			corner_pass(false);
