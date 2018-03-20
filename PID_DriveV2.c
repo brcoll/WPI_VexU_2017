@@ -7,6 +7,9 @@ float linearDistance = 0;
 float turnAng = 0;
 int maxspeed = MAX_VOLTAGE;
 
+
+bool disabled = false;
+
 //TIME FOR US TO GIVE UP
 int stuckTimeout = 1000;
 bool skills = false;
@@ -149,8 +152,8 @@ task PID_Drive(){
 				distspeed = -maxspeed;
 			}
 
-			motor[FLD] = motor[BLD] = distspeed - diffspeed; //Set motor values
-			motor[FRD] = motor[BRD] = distspeed + diffspeed; //Set motor values
+			leftDrive(distspeed - diffspeed); //Set motor values
+			rightDrive(distspeed + diffspeed); //Set motor values
 
 			//Find sign of output
 			if(distspeed > 0){
@@ -160,16 +163,16 @@ task PID_Drive(){
 			}
 
 			//If close to range apply negative voltage to stop robot
-			if(abs(disterror)<driveErrorThreshold){
+			if(abs(disterror)<driveErrorThreshold || disabled){
 
-				motor[FLD] = motor[BLD] = (15 * -direction);
-			  motor[FRD] = motor[BRD] = (15 * -direction);
+				leftDrive(15 * -direction);
+			  rightDrive(15 * -direction);
 				wait1Msec(20); //OLD 100
-				if(abs(distderivative) < 0.5){ //Once you stop moving reset
+				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isDriving = false;
 					linearDistance = 0;
-					motor[FLD] = motor[BLD] = 0;
-			    motor[FRD] = motor[BRD] = 0;
+					leftDrive(0);
+			    rightDrive(0);
 				}
 			}
 			//stallDetection();
@@ -219,8 +222,8 @@ task PID_Drive(){
 				distspeed = -maxspeed;
 			}
 
-			motor[FLD] = motor[BLD] = distspeed - diffspeed; //Set motor values
-		  motor[FRD] = motor[BRD] = -1*(distspeed + diffspeed); //Set motor values //OLD *-1
+			leftDrive(distspeed - diffspeed); //Set motor values
+		  rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
 
 					//Find direction of output
 			if(distspeed > 0){
@@ -233,11 +236,11 @@ task PID_Drive(){
 			if(abs(disterror)<turnErrorThreshold){
 				//autoTurn(20 * -direction); //OLD 15
 				wait1Msec(5); //OLD 100
-				if(abs(distderivative) < 0.5){ //Once you stop moving reset
+				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isTurning = false;
 					turnAng = 0;
-					motor[FLD] = motor[BLD] = 0;
-			    motor[FRD] = motor[BRD] = 0;
+					leftDrive(0);
+			    rightDrive(0);
 				}
 			}
 			wait1Msec(20);
@@ -255,11 +258,11 @@ task PID_Drive(){
 			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
 			if(wallForward){
-				motor[FLD] = motor[BLD] = wallPower - diffspeed; //Set motor values
-				motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
+				leftDrive(wallPower - diffspeed); //Set motor values
+				rightDrive(wallPower + diffspeed); //Set motor values
 			} else {
-				motor[FLD] = motor[BLD] = -wallPower - diffspeed; //Set motor values
-				motor[FRD] = motor[BRD] = -wallPower + diffspeed; //Set motor values
+				leftDrive(-wallPower - diffspeed); //Set motor values
+				rightDrive(-wallPower + diffspeed); //Set motor values
 			}
 
 			//When derivative error is less than certain value begin latching
@@ -273,8 +276,8 @@ task PID_Drive(){
 
 			//If hitWall and beginning time has passed stop motors and reset
 			if(startingTime < nPgmTime && hitWall){
-				motor[FLD] = motor[BLD] = 0; //Set motor values
-				motor[FRD] = motor[BRD] = 0; //Set motor values
+				leftDrive(0); //Set motor values
+				rightDrive(0); //Set motor values
 				isWall = false;
 			}
 			wait1Msec(20);
@@ -290,17 +293,18 @@ void driveDistance(float dist, bool tolerance = false){
 	//linearDistance = dist;
 	advance_drive_target(dist);
 	isDriving = true;
-	while(isDriving){
+	while(isDriving && !disabled){
 		wait1Msec(20);
 	}
 }
+
 //Turns given angle in degrees (right = +)
 void turnAngle(float ang, bool tolerance = false){
 	initPID(tolerance);
 	//turnAng = ang;
 	advance_turn_target(ang);
 	isTurning = true;
-	while(isTurning){
+	while(isTurning && !disabled){
 		wait1Msec(20);
 	}
 }
@@ -309,7 +313,24 @@ void driveWall(bool forward){
 	initPID(false);
 	isWall=true;
 	wallForward = forward;
-	while(isWall){
+	while(isWall && !disabled){
+		wait1Msec(20);
+	}
+}
+
+void splineDest(point dest){
+	target_p.p_x = dest.p_x;
+	target_p.p_y = dest.p_y;
+	target_p.p_t = dest.p_t;
+	point vect = dest;
+	//vect.p_t = angle_diff(vect.p_t, 90);
+	float start_dist = get_coord_error(vect, pos_p);
+	float start_ang = angle_diff(dest.p_t, pos_p.p_t);
+	isDriving = true;
+	while(isDriving && !disabled){
+		float er = get_coord_error(vect, pos_p);
+		float der = (start_ang * get_coord_error(vect, pos_p) / start_dist);
+		target_p.p_t = angle_diff(dest.p_t, (start_ang * get_coord_error(vect, pos_p) / start_dist));
 		wait1Msec(20);
 	}
 }

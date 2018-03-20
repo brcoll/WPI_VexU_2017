@@ -33,6 +33,9 @@
 
 #define MAX_VOLTAGE 127
 
+
+#define turnScale 0.239
+
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Helpers.c"

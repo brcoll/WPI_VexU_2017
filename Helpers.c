@@ -19,3 +19,9 @@ int removeDeadband(int input, int deadband = 20) {
 		return 0;
 	}
 }
+
+void wait_user(){
+	while (!vexRT(Btn7U)){
+		wait1Msec(20);
+	}
+}
