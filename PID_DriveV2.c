@@ -298,6 +298,22 @@ void driveDistance(float dist, bool tolerance = false){
 	}
 }
 
+void startDrive(float dist, float end = 0, bool tolerance = false){
+	advance_drive_target(end);
+
+	point waypoint;
+	copy_points(&target_p, &waypoint);
+
+	advance_drive_target(dist - end);
+	initPID(tolerance);
+	//linearDistance = dist;
+	isDriving = true;
+	float temp = get_coord_error(waypoint, pos_p);
+	while(get_coord_error(waypoint, pos_p) > 0 && !disabled){
+		wait1Msec(20);
+	}
+}
+
 //Turns given angle in degrees (right = +)
 void turnAngle(float ang, bool tolerance = false){
 	initPID(tolerance);

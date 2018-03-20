@@ -88,13 +88,15 @@ float get_coord_error(point p1, point p2, float theta = 1000){
 	return proj_dist(p1, theta) - proj_dist(p2, theta);
 }
 
-float line_distance(point p1, point p2){
-	return 0;
-}
-
 void add_dist(point &position, float dist){
 	position.p_x += dist * sin ((position.p_t * 3.14) / 180);
 	position.p_y += dist * cos ((position.p_t * 3.14) / 180);
+}
+
+void copy_points(point *from, point *to){
+	to->p_x = from->p_x;
+	to->p_y = from->p_y;
+	to->p_t = from->p_t;
 }
 
 float get_drive_error(){

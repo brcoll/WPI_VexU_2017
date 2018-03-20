@@ -20,23 +20,26 @@ void corner_pass(bool is_long){
 	target_p.p_y = 90;
 	driveDistance(0);
 	set_outer_goal(gs_down);
-	target_p.p_y = 105;
+	target_p.p_y = 107;
 	driveDistance(0);
 	SensorValue[intake_piston] = 1;
 	turnAngle(0);
 	set_inner_goal(gs_up);
 	wait1Msec(400);
+	CB_setpoint = CB_hover_setpoint;
+	turnAngle(55);
+	startDrive(13, 4);
 	CB_setpoint = CB_bottom_setpoint;
-	wait1Msec(200);
-	driveDistance(5);
+	driveDistance(0);
 	SensorValue[intake_piston] = 0;
-	wait1Msec(400);
+	wait1Msec(300);
 	CB_setpoint = CB_top_setpoint;
-	turnAngle(45);
-	SensorValue[intake_piston] = 1;
 	set_inner_goal(gs_down);
-	driveDistance(18);
+	driveDistance(7);
 	set_outer_goal(gs_up);
+	wait1Msec(1000);
+	SensorValue[intake_piston] = 1;
+
 
 
 

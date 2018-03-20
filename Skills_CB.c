@@ -1,5 +1,6 @@
 int CB_top_setpoint = 2800;
 int CB_bottom_setpoint = 630;
+int CB_hover_setpoint = 1500;
 int CB_setpoint = CB_bottom_setpoint;
 
 enum CB_state{
