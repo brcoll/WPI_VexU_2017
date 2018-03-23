@@ -6,7 +6,7 @@ void corner_pass(bool is_long){
 	//turnAngle(-125);
 	//driveDistance(22);
 
-	set_odom(83, 7, 50);
+	set_odom(83, 9, 50);
 	set_target(83, 12, 50.5);
 	driveDistance(0);
 	set_target(0, 12, 67);

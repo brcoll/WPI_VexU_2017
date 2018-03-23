@@ -31,18 +31,7 @@ float disterror_Stuck, distderivative_Stuck, prevdisterror_Stuck =0;
 bool hitWall, hitSomething, goingBack = false, wallForward = false;
 int lastLatched, lastLatched_Stuck, startingTime, wallTime = 0;
 
-//LINEAR DRIVE GAINS
-float distP = 14;
-float distI = 0.25;
-float distD = 125;
-//STEADY DRIVE GAINS
-float diffP = 8;
-float diffI = 0.05;
-float diffD = 0.2;
-//TURN GAINS
-float turnP = 10;
-float turnI = 0.3;
-float turnD = 30; // OLD 80
+
 
 ////Return value of left encoder in inches
 //float getLeftEncoder() {
@@ -302,7 +291,7 @@ void startDrive(float dist, float end = 0, bool tolerance = false){
 	advance_drive_target(end);
 
 	point waypoint;
-	copy_points(&target_p, &waypoint);
+	copy_points(target_p, waypoint);
 
 	advance_drive_target(dist - end);
 	initPID(tolerance);
@@ -334,19 +323,27 @@ void driveWall(bool forward){
 	}
 }
 
-void splineDest(point dest){
+void driveToPoint(point dest){
+	target_p.p_t = angle_between_points(pos_p, dest);
+	turnAngle(0);
 	target_p.p_x = dest.p_x;
 	target_p.p_y = dest.p_y;
-	target_p.p_t = dest.p_t;
-	point vect = dest;
-	//vect.p_t = angle_diff(vect.p_t, 90);
-	float start_dist = get_coord_error(vect, pos_p);
-	float start_ang = angle_diff(dest.p_t, pos_p.p_t);
+	driveDistance(0);
+	copy_points(dest, target_p);
+	turnAngle(0);
+
+}
+
+void splineDest(point dest, float offset){
+	copy_points(dest, target_p);
+	point vect;
+	copy_points(dest, vect);
 	isDriving = true;
 	while(isDriving && !disabled){
-		float er = get_coord_error(vect, pos_p);
-		float der = (start_ang * get_coord_error(vect, pos_p) / start_dist);
-		target_p.p_t = angle_diff(dest.p_t, (start_ang * get_coord_error(vect, pos_p) / start_dist));
+		offset_on_line(vect, pos_p, offset);
+		target_p.p_t = angle_between_points(pos_p, vect);
 		wait1Msec(20);
 	}
+	copy_points(dest, target_p);
+	turnAngle(0);
 }

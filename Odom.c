@@ -1,3 +1,9 @@
+/*
+Odomotry and coordinate library
+Author: Oliver Jay
+Adapted from point to point naviagaiton code from RBE2001
+by Max Westwater, Sam White, and Oliver Jay
+*/
 #ifndef ODOM_C
 #define ODOM_C
 
@@ -60,7 +66,7 @@ task Odometry(){
 		pos_p.p_y += avgIn * cos ((theta * 3.14) / 180);
 		pos_p.p_x += avgIn * sin ((theta * 3.14) / 180);
 		pos_p.p_t = theta;
-		delay(20);
+		delay(5);
 	}
 }
 
@@ -93,10 +99,10 @@ void add_dist(point &position, float dist){
 	position.p_y += dist * cos ((position.p_t * 3.14) / 180);
 }
 
-void copy_points(point *from, point *to){
-	to->p_x = from->p_x;
-	to->p_y = from->p_y;
-	to->p_t = from->p_t;
+void copy_points(point &from, point &to){
+	to.p_x = from.p_x;
+	to.p_y = from.p_y;
+	to.p_t = from.p_t;
 }
 
 float get_drive_error(){
@@ -113,6 +119,19 @@ void advance_drive_target(float dist){
 
 void advance_turn_target(float ang){
 	target_p.p_t += ang;
+}
+
+void offset_on_line(point &p1, point reference, float offset){
+	float current_offset = get_coord_error(p1, reference);
+	add_dist(p1, offset - current_offset);
+}
+
+float angle_between_points(point start_p, point end_p){
+  float pointX = end_p.p_x - start_p.p_x;
+  float pointY = end_p.p_y - start_p.p_y;
+  pointY = pointY ? pointY : pointY + .01;
+
+	return ((atan(pointX/pointY) * 57.2958) + ((pointY < 0)* 180))%360 ;
 }
 
 void zero_odom(){
@@ -139,8 +158,5 @@ void set_odom(float new_t, float new_x = 0, float new_y = 0){
 	SensorValue(rightEncoder) = 0;
 	odom_reset = true;
 }
-//void autoZero(float coord_offset){
-
-//}
 
 #endif
