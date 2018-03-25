@@ -314,7 +314,8 @@ void turnAngle(float ang, bool tolerance = false){
 	}
 }
 
-void driveWall(bool forward){
+void driveWall(bool forward, int _wallPower = 80){
+	wallPower = _wallPower
 	initPID(false);
 	isWall=true;
 	wallForward = forward;

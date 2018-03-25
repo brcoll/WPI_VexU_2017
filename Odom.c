@@ -24,6 +24,32 @@ bool odom_reset = false;
 point target_p;
 point pos_p;
 
+#define SONAR_TO_IN 152.3
+#define UPDATE_WEIGHT .06
+#define WALL_READ_DIST 20
+
+float distToWall(){
+	return SensorValue[wall]/SONAR_TO_IN + 5.5
+}
+
+float wallDist = 0;
+
+void senseWall(){
+	if(pos_p.p_t % 90 < 3 && pos_p.p_t % 90 > -3){
+		int ang = round(pos_p.p_t / 90.0);
+		if (ang == 1 && pos_p.p_y > (144 - WALL_READ_DIST)){
+			if (abs(distToWall() - (144 - pos_p.p_y)) < 5){
+				pos_p.p_y = (pos_p.p_y * (1 - UPDATE_WEIGHT)) + ((144 - distToWall()) * UPDATE_WEIGHT);
+			}
+		}
+		if (ang%4 == 0  && pos_p.p_x < WALL_READ_DIST){
+			if (abs(distToWall() - pos_p.p_x) < 5){
+				pos_p.p_x = (pos_p.p_x * (1 - UPDATE_WEIGHT)) + (distToWall() * UPDATE_WEIGHT);
+			}
+		}
+	}
+}
+
 float ticksToIn(long ticks){
 	return ((float)ticks / 1024 / 4) * 3.25 * PI;
 }
@@ -37,6 +63,7 @@ task Odometry(){
 	long leftCount, rightCount, leftTicks, rightTicks;
 	float leftIn, rightIn, avgIn, theta;
 	while (true){
+		wallDist = distToWall();
 		leftCount = SensorValue(leftEncoder);
 		rightCount = SensorValue(rightEncoder);
 
@@ -66,6 +93,7 @@ task Odometry(){
 		pos_p.p_y += avgIn * cos ((theta * 3.14) / 180);
 		pos_p.p_x += avgIn * sin ((theta * 3.14) / 180);
 		pos_p.p_t = theta;
+		senseWall();
 		delay(5);
 	}
 }
