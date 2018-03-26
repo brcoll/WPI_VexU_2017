@@ -16,7 +16,9 @@ void corner_pass(bool is_long){
 	CB_setpoint = CB_top_setpoint;
 	target_p.p_x = 12;
 	target_p.p_y = 90;
+
 	driveDistance(0);
+
 	set_outer_goal(gs_down);
 	target_p.p_y = 110;
 	driveDistance(0);
@@ -42,17 +44,24 @@ void corner_pass(bool is_long){
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
 	//wait1Msec(1300);
-	target_p.p_t = 90;
+	target_p.p_t = 85;
 	turnAngle(0);
 
 	// Go place
-	startDrive(50, 10);
-	SensorValue[intake_piston] = 1;
-	driveDistance(0);
-	turnAngle(45);
-	driveDistance(20);
-	turnAngle(-90);
-	driveWall(true);
+	startDrive(40, 10);
+	//SensorValue[intake_piston] = 1;
+	//driveDistance(0);
+	//turnAngle(45);
+	//driveDistance(20);
+	//turnAngle(-90);
+	//driveWall(true);
+
+	point lineUp;
+	lineUp.p_x = 100;
+	lineUp.p_y = 110;
+	lineUp.p_t = 45;
+	splineDest(lineUp, 24);
+
 
 
 

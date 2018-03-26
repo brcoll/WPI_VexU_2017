@@ -127,15 +127,15 @@ task usercontrol()
 			//splineDest(first_goal);
 		} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
 			//turnAngle(90);
-			driveDistance(0);
+			//driveDistance(0);
 			//delay(1000);
 			//turnAngle(0);
-			//point dest;
-			//splineDest(dest, 20);
+			point dest;
+			splineDest(dest, 20);
 		} else if (vexRT(Btn7D) && abs(vexRT(Ch1)) < 25){
 			////turnAngle(90);
-			set_odom(83, 7, 50);
-			//set_odom(0, 0, 0);
+			//set_odom(83, 7, 50);
+			set_odom(0, 0, 0);
 			worst_bat = nImmediateBatteryLevel;
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
 			corner_pass(false);
