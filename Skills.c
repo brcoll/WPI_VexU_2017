@@ -38,10 +38,10 @@
 #include "Skills_Constants.c"
 #include "Helpers.c"
 #include "Goals.c"
-#include "Skills_CB.c"
 #include "Odom.c"
 #include "Skills_Drive.c"
 #include "PID_DriveV2.c"
+#include "Skills_CB.c"
 #include "Skills_Auto.c"
 #include "Canceler.c"
 
@@ -119,7 +119,7 @@ task usercontrol()
 
 		if(vexRT(Btn7L)){
 			//driveDistance(24);
-			turnAngle(45);
+			turnAngle(0);
 			//point first_goal;
 			//first_goal.p_x = 12;
 			//first_goal.p_y = 100;
@@ -138,7 +138,8 @@ task usercontrol()
 			set_odom(0, 0, 0);
 			worst_bat = nImmediateBatteryLevel;
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
-			corner_pass(false);
+			//corner_pass(false);
+			center_pass();
 		} else {
 			arcadeDrive();
 			isDriving = false;
@@ -146,18 +147,19 @@ task usercontrol()
 		}
   	pot_val = SensorValue[cb_pot];
   	arcadeDrive();
-  	if(vexRT(Btn6U)){
-  		set_inner_goal(gs_up);
-  	}
-  	else if (vexRT(Btn6D)){
-  		set_inner_goal(gs_down);
-  	}
 
   	if (vexRT(Btn5U)){
   		set_outer_goal(gs_up);
   	}
   	else if (vexRT(Btn5D)){
   		set_outer_goal(gs_down);
+  	}
+
+  	if(vexRT(Btn6U)){
+  		set_inner_goal(gs_up);
+  	}
+  	else if (vexRT(Btn6D)){
+  		set_inner_goal(gs_down);
   	}
 
   	if(vexRT(Btn8U)){
