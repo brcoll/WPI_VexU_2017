@@ -1,3 +1,10 @@
+void back_out(){
+	int oldmax = maxspeed;
+	maxspeed = 60;
+	driveDistance(-18);
+	maxspeed = oldmax;
+}
+
 void corner_pass(bool is_long){
 	set_odom(-137, 16, 30);
 	driveDistance(-14);
@@ -11,9 +18,8 @@ void corner_pass(bool is_long){
 	turnAngle(0);
 	driveDistance(0);
 
-	SensorValue[intake_piston] = 0;
-	wait1Msec(400);
-	CB_setpoint = CB_top_setpoint;
+	grab();
+	set_CB_target(CB_top_setpoint);
 	target_p.p_x = 13.5;
 	target_p.p_y = 90;
 
@@ -22,13 +28,11 @@ void corner_pass(bool is_long){
 	set_outer_goal(gs_down);
 	target_p.p_y = 110;
 	driveDistance(0);
-	wait1Msec(300);
-	SensorValue[intake_piston] = 1;
+	drop();
 	turnAngle(0);
 	set_inner_goal(gs_up);
 
 	// Get second
-	wait1Msec(400);
 	CB_setpoint = CB_hover_setpoint;
 	driveDistance(-5);
 	turnAngle(45);
@@ -39,11 +43,9 @@ void corner_pass(bool is_long){
 	//turnAngle(20);
 	set_inner_goal(gs_down);
 	driveDistance(0);
-	SensorValue[intake_piston] = 0;
-	wait1Msec(300);
+	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	//wait1Msec(1300);
 	target_p.p_t = 80;
 	turnAngle(0);
 
@@ -63,6 +65,7 @@ void corner_pass(bool is_long){
 	splineDest(lineUp, 24);
 
 	driveWall(true);
+	drop();
 
 	//driveDistance(25);
  	// SensorValue[intake_piston] = 0;
@@ -84,7 +87,10 @@ void corner_pass(bool is_long){
 
 void center_pass(){
 	set_odom(0,0,0);
-	startDrive(60, 48);
+	drop();
+	set_cb_target(CB_bottom_setpoint);
+
+	startDrive(60, 23);
 	set_outer_goal(gs_down);
 	startDrive(0, -5);
 	grab();
@@ -94,16 +100,26 @@ void center_pass(){
 	drop();
 	set_CB_target(CB_bottom_setpoint);
 	CB_wait();
-	driveDistance(8, 5);
+	startDrive(8, 5);
 	set_outer_goal(gs_up);
 	driveDistance(0);
 	grab();
 	set_CB_target(CB_top_setpoint);
 
 	point lineUp;
-	lineUp.p_x = -6;
+	lineUp.p_x = -4;
 	lineUp.p_y = 116;
-	lineUp.p_t = -5;
+	lineUp.p_t = 0;
+	splineDest(lineUp, 20);
+	driveWall(true);
 	CB_wait();
+	set_inner_goal(gs_down);
 	drop();
+	set_odom(0,0,0);
+
+	back_out();
+	turnAngle(-90);
+	driveDistance(22);
+	turnAngle(-90);
+	driveWall(false, 50);
 }
