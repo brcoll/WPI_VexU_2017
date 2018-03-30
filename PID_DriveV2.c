@@ -348,3 +348,13 @@ void splineDest(point dest, float offset){
 	copy_points(dest, target_p);
 	turnAngle(0);
 }
+
+void driveToButton(float power, tSensors sensorPort){
+	wallPower = abs(power);
+	initPID(false);
+	isWall = true;
+	while(isWall && !disabled){
+		isWall = SensorValue[sensorPort];
+		wait1Msec(20);
+	}
+}

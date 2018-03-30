@@ -7,11 +7,13 @@ void back_out(){
 
 void corner_pass(bool is_long){
 	set_odom(-137, 16, 30);
-	driveDistance(-14);
-	turnAngle(-108);
-	driveWall(false, 60);
+	//driveDistance(-14);
+	back_out();
+	driveDistance(3);
+	turnAngle(-115);
+	driveWall(false, 50);
 
-	set_odom(83, 11, 50);
+	set_odom(83, 15, 50);
 	set_target(83, 13.5, 50.5);
 	driveDistance(0);
 	set_target(0, 13.5, 69);
@@ -26,6 +28,8 @@ void corner_pass(bool is_long){
 	driveToPoint(target_p);
 
 	set_outer_goal(gs_down);
+	driveToButton(80, dgtl10);
+	pos_p.p_y = 96;
 	target_p.p_y = 110;
 	driveDistance(0);
 	drop();

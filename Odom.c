@@ -35,7 +35,7 @@ float distToWall(){
 float wallDist = 0;
 
 void senseWall(){
-	if(pos_p.p_t % 90 < 3 && pos_p.p_t % 90 > -3){
+	if(pos_p.p_t % 90 < 3 && pos_p.p_t % 90 > -3 && distToWall() < WALL_READ_DIST){
 		int ang = round(pos_p.p_t / 90.0);
 		if (ang == 1 && pos_p.p_y > (144 - WALL_READ_DIST)){
 			if (abs(distToWall() - (144 - pos_p.p_y)) < 5){

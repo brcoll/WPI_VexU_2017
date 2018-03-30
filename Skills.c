@@ -118,8 +118,9 @@ task usercontrol()
   	}
 
 		if(vexRT(Btn7L)){
+			corner_pass(false);
 			//driveDistance(24);
-			turnAngle(0);
+			//turnAngle(0);
 			//point first_goal;
 			//first_goal.p_x = 12;
 			//first_goal.p_y = 100;
@@ -135,7 +136,8 @@ task usercontrol()
 		} else if (vexRT(Btn7D) && abs(vexRT(Ch1)) < 25){
 			////turnAngle(90);
 			//set_odom(83, 7, 50);
-			set_odom(0, 0, 0);
+			set_odom(83, 11, 50);
+			//set_odom(0, 0, 0);
 			worst_bat = nImmediateBatteryLevel;
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
 			//corner_pass(false);
