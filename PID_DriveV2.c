@@ -21,7 +21,7 @@ int Tight_driveErrorThreshold = 1;
 int Tight_turnErrorThreshold = 1;
 
 int DGAF_driveErrorThreshold = 2;
-int DGAF_turnErrorThreshold = 4;
+int DGAF_turnErrorThreshold = 3;
 
 
 //Linear variables
@@ -260,7 +260,7 @@ task PID_Drive(){
 				lastLatched = nPgmTime;
 				hitWall = false;
 				} else {
-				hitWall =  nPgmTime - lastLatched > 500; //OLD 250
+				hitWall =  nPgmTime - lastLatched > 250; //OLD 250
 			}
 
 			//If hitWall and beginning time has passed stop motors and reset

@@ -1,6 +1,6 @@
 void back_out(){
 	int oldmax = maxspeed;
-	maxspeed = 60;
+	maxspeed = 50;
 	driveDistance(-18);
 	maxspeed = oldmax;
 }
@@ -10,12 +10,13 @@ void corner_pass(bool is_long){
 	//driveDistance(-14);
 	back_out();
 	driveDistance(3);
+	set_CB_target(CB_bottom_setpoint);
 	turnAngle(-115);
 	driveWall(false, 50);
 
-	set_odom(83, 15, 50);
+	set_odom(83, 9, 50);
 	set_target(83, 13.5, 50.5);
-	driveDistance(0);
+	driveDistance(0, true);
 	set_target(0, 13.5, 69);
 	turnAngle(0);
 	driveDistance(0);
@@ -30,18 +31,18 @@ void corner_pass(bool is_long){
 	set_outer_goal(gs_down);
 	driveToButton(80, dgtl10);
 	pos_p.p_y = 96;
-	target_p.p_y = 110;
+	target_p.p_y = 116;
 	driveDistance(0);
-	drop();
+	drop(true);
 	turnAngle(0);
 	set_inner_goal(gs_up);
 
 	// Get second
 	CB_setpoint = CB_hover_setpoint;
-	driveDistance(-5);
+	driveDistance(-4, true);
 	turnAngle(45);
 	//startDrive(6, 3);
-	startDrive(23, 3);
+	startDrive(21, 3);
 	CB_setpoint = CB_bottom_setpoint;
 	//driveDistance(6);
 	//turnAngle(20);
@@ -50,7 +51,7 @@ void corner_pass(bool is_long){
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	target_p.p_t = 80;
+	target_p.p_t = 78;
 	turnAngle(0);
 
 	// Go place
@@ -63,12 +64,13 @@ void corner_pass(bool is_long){
 	//driveWall(true);
 
 	point lineUp;
-	lineUp.p_x = 94;
-	lineUp.p_y = 116;
+	lineUp.p_x = 98;
+	lineUp.p_y = 109;
 	lineUp.p_t = 45;
 	splineDest(lineUp, 24);
 
-	driveWall(true);
+	driveWall(true, 127);
+	set_inner_goal(gs_down);
 	drop();
 
 	//driveDistance(25);
@@ -89,8 +91,9 @@ void corner_pass(bool is_long){
 	//turnAngle(-135);
 }
 
-void center_pass(){
+void center_pass(bool first){
 	set_odom(0,0,0);
+	set_inner_goal(gs_down);
 	drop();
 	set_cb_target(CB_bottom_setpoint);
 
@@ -115,15 +118,25 @@ void center_pass(){
 	lineUp.p_y = 116;
 	lineUp.p_t = 0;
 	splineDest(lineUp, 20);
-	driveWall(true);
+	driveWall(true, 127);
 	CB_wait();
 	set_inner_goal(gs_down);
 	drop();
 	set_odom(0,0,0);
 
+	if (first){
+		back_out();
+		turnAngle(-90);
+		driveDistance(22);
+		turnAngle(-90);
+		driveWall(false, 50);
+	}
+}
+
+void programming_skills(){
+	center_pass(true);
+	center_pass(false);
+	corner_pass(false);
+	corner_pass(true);
 	back_out();
-	turnAngle(-90);
-	driveDistance(22);
-	turnAngle(-90);
-	driveWall(false, 50);
 }

@@ -33,12 +33,12 @@ float getAvgEncoder(){
 
 // Drives the left drive at the given voltage.
 void leftDrive(int voltage){
-	motor(LRD) = motor(LRR) = motor(LFD) = motor(LFD) = removeDeadband(voltage);
+	motor(LRD) = motor(LRR) = motor(LFD) = motor(LFR) = removeDeadband(voltage);
 }
 
 //Drives the right drive at the given voltage.
 void rightDrive(int voltage){
-	motor(RRD) = motor(RRR) = motor(RFD) = motor(RFD) = removeDeadband(voltage);
+	motor(RRD) = motor(RRR) = motor(RFD) = motor(RFR) = removeDeadband(voltage);
 }
 
 //ARCADE DRIVE SYSTEM

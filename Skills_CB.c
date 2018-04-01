@@ -36,16 +36,18 @@ void set_CB_pwr(int voltage){
 }
 
 void grab(){
-	if (SensorValue[intake_piston]){
+	if (SensorValue[intake_piston] && !disabled){
 		SensorValue[intake_piston] = 0;
 		wait1Msec(300);
 	}
 }
 
-void drop(){
-	if (!SensorValue[intake_piston]){
+void drop(bool full = false){
+	if (!SensorValue[intake_piston] && !disabled){
 		SensorValue[intake_piston] = 1;
 		wait1Msec(300);
+		if (full) // Let fall completely
+			wait1Msec(300);
 	}
 }
 

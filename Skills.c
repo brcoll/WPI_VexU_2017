@@ -131,8 +131,9 @@ task usercontrol()
 			//driveDistance(0);
 			//delay(1000);
 			//turnAngle(0);
-			point dest;
-			splineDest(dest, 20);
+			//point dest;
+			//splineDest(dest, 20);
+			programming_skills();
 		} else if (vexRT(Btn7D) && abs(vexRT(Ch1)) < 25){
 			////turnAngle(90);
 			//set_odom(83, 7, 50);
@@ -141,7 +142,8 @@ task usercontrol()
 			worst_bat = nImmediateBatteryLevel;
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
 			//corner_pass(false);
-			center_pass();
+			//center_pass(true);
+			back_out();
 		} else {
 			arcadeDrive();
 			isDriving = false;
