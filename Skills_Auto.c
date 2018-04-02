@@ -97,6 +97,7 @@ void center_pass(bool first){
 	if (!first){
 		back_out();
 		turnAngle(-90);
+		driveDistance(24, true);
 		turnAngle(-90);
 		driveWall(false, 50);
 		set_odom(-2,0,0);
