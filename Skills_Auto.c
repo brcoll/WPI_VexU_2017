@@ -1,7 +1,7 @@
 void back_out(){
 	int oldmax = maxspeed;
 	maxspeed = 50;
-	driveDistance(-18);
+	driveDistance(-19);
 	maxspeed = oldmax;
 }
 
@@ -93,6 +93,15 @@ void corner_pass(bool is_long){
 
 void center_pass(bool first){
 	set_odom(0,0,0);
+
+	if (!first){
+		back_out();
+		turnAngle(-90);
+		turnAngle(-90);
+		driveWall(false, 50);
+		set_odom(-2,0,0);
+	}
+
 	set_inner_goal(gs_down);
 	drop();
 	set_cb_target(CB_bottom_setpoint);
@@ -114,7 +123,7 @@ void center_pass(bool first){
 	set_CB_target(CB_top_setpoint);
 
 	point lineUp;
-	lineUp.p_x = -4;
+	lineUp.p_x = -3;
 	lineUp.p_y = 116;
 	lineUp.p_t = 0;
 	splineDest(lineUp, 20);
@@ -123,14 +132,6 @@ void center_pass(bool first){
 	set_inner_goal(gs_down);
 	drop();
 	set_odom(0,0,0);
-
-	if (first){
-		back_out();
-		turnAngle(-90);
-		driveDistance(22);
-		turnAngle(-90);
-		driveWall(false, 50);
-	}
 }
 
 void programming_skills(){
@@ -139,4 +140,12 @@ void programming_skills(){
 	corner_pass(false);
 	corner_pass(true);
 	back_out();
+}
+
+void score_cone(){
+	grab();
+	set_cb_target(CB_top_setpoint);
+	cb_wait();
+	drop();
+	set_cb_target(CB_bottom_setpoint);
 }

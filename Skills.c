@@ -143,7 +143,8 @@ task usercontrol()
 		} else if (vexRT(Btn7U) && abs(vexRT(Ch1)) < 25){
 			//corner_pass(false);
 			//center_pass(true);
-			back_out();
+			//back_out();
+			score_cone();
 		} else {
 			arcadeDrive();
 			isDriving = false;

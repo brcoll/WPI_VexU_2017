@@ -1,7 +1,7 @@
 int CB_top_setpoint = 2900;
-int CB_bottom_setpoint = 610;
+int CB_bottom_setpoint = 580;
 int CB_hover_setpoint = 1500;
-int CB_threshold = 150;
+int CB_threshold = 220;
 int CB_hold_pwr = 20;
 int CB_setpoint = CB_bottom_setpoint;
 
@@ -73,7 +73,7 @@ task Control_CB(){
 
 void cb_wait(){
 	bool done = false;
-	while (!disabled && !((CB_setpoint == CB_top_setpoint && cb_good_loops > 60) || (CB_setpoint == CB_bottom_setpoint && cb_good_loops > 10))){
+	while (!disabled && !((CB_setpoint == CB_top_setpoint && cb_good_loops > 15) || (CB_setpoint == CB_bottom_setpoint && cb_good_loops > 10))){
 		wait1Msec(10);
 	}
 }
