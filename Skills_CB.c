@@ -16,7 +16,7 @@ enum CB_state{
 };
 
 float CB_Kp = 0.2;
-float CB_Kd = .01;
+float CB_Kd = 1.2;
 
 float CB_error = 0;
 float CB_derivative = 0;
@@ -50,12 +50,13 @@ void drop(bool full = false){
 			wait1Msec(300);
 	}
 }
-
+#define CB_D_SMOOTH .6
+#define CB_E_SMOOTH .6
 task Control_CB(){
 	while (true){
-		CB_position = SensorValue[cb_pot];
+		CB_position = (CB_position * CB_E_SMOOTH) + (SensorValue[cb_pot] * (1 - CB_E_SMOOTH));
 		CB_error = CB_setpoint - CB_position;
-		CB_derivative = CB_position - CB_last;
+		CB_derivative = (CB_derivative * CB_D_SMOOTH) + ((CB_position - CB_last) * (1 - CB_D_SMOOTH));
 		CB_power = ranged_output(CB_error * CB_Kp - CB_derivative * CB_Kd);
 		if ((CB_setpoint == CB_top_setpoint && CB_error > CB_threshold) ||
 			(CB_setpoint == CB_bottom_setpoint && CB_error < -CB_threshold)) {
@@ -63,7 +64,7 @@ task Control_CB(){
 		}
 		else {
 			CB_good_loops ++;
-			CB_power = CB_power > 0 ? CB_hold_pwr : - CB_hold_pwr;
+			CB_power = CB_error > 0 ? CB_hold_pwr : - CB_hold_pwr;
 		}
 		set_CB_pwr(CB_power);
 		CB_last = CB_position;
@@ -73,7 +74,7 @@ task Control_CB(){
 
 void cb_wait(){
 	bool done = false;
-	while (!disabled && !((CB_setpoint == CB_top_setpoint && cb_good_loops > 15) || (CB_setpoint == CB_bottom_setpoint && cb_good_loops > 10))){
+	while (!disabled && !((CB_setpoint == CB_top_setpoint && cb_good_loops > 25) || (CB_setpoint == CB_bottom_setpoint && cb_good_loops > 10))){
 		wait1Msec(10);
 	}
 }

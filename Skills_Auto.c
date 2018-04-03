@@ -5,6 +5,9 @@ void back_out(){
 	maxspeed = oldmax;
 }
 
+#define ACP_CP_T 83
+#define ACP_CP_X 10
+
 void corner_pass(bool is_long){
 	set_odom(-137, 16, 30);
 	//driveDistance(-14);
@@ -14,11 +17,11 @@ void corner_pass(bool is_long){
 	turnAngle(-115);
 	driveWall(false, 50);
 
-	set_odom(83, 9, 50);
-	set_target(83, 13.5, 50.5);
+	set_odom(ACP_CP_T, ACP_CP_X, 50);
+	set_target(ACP_CP_T, 12, 50.5);
 	driveDistance(0, true);
 	set_target(0, 13.5, 69);
-	turnAngle(0);
+	turnAngle(0, true);
 	driveDistance(0);
 
 	grab();
@@ -39,8 +42,8 @@ void corner_pass(bool is_long){
 
 	// Get second
 	CB_setpoint = CB_hover_setpoint;
-	driveDistance(-4, true);
-	turnAngle(45);
+	driveDistance(-3.5, true);
+	turnAngle(48, true);
 	//startDrive(6, 3);
 	startDrive(21, 3);
 	CB_setpoint = CB_bottom_setpoint;
@@ -51,7 +54,7 @@ void corner_pass(bool is_long){
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	target_p.p_t = 78;
+	target_p.p_t = 74;
 	turnAngle(0);
 
 	// Go place
@@ -64,8 +67,8 @@ void corner_pass(bool is_long){
 	//driveWall(true);
 
 	point lineUp;
-	lineUp.p_x = 98;
-	lineUp.p_y = 109;
+	lineUp.p_x = 100;
+	lineUp.p_y = 107;
 	lineUp.p_t = 45;
 	splineDest(lineUp, 24);
 
@@ -93,19 +96,19 @@ void corner_pass(bool is_long){
 
 void center_pass(bool first){
 	set_odom(0,0,0);
+	drop();
 
 	if (!first){
+		set_inner_goal(gs_down);
 		back_out();
 		turnAngle(-90);
 		driveDistance(24, true);
 		turnAngle(-90);
 		driveWall(false, 50);
+		set_cb_target(CB_bottom_setpoint);
 		set_odom(-2,0,0);
 	}
 
-	set_inner_goal(gs_down);
-	drop();
-	set_cb_target(CB_bottom_setpoint);
 
 	startDrive(60, 23);
 	set_outer_goal(gs_down);
