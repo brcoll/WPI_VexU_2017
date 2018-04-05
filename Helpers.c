@@ -1,4 +1,4 @@
-
+// Returns the input, or bounded value if out of range
 int ranged_output(int input, int max = 127){
 	if (input > max){
 		return max;
@@ -11,6 +11,7 @@ int ranged_output(int input, int max = 127){
 	}
 }
 
+// Removes deadband
 int removeDeadband(int input, int deadband = 20) {
 	if (abs(input) > deadband) {
 		return input;
@@ -20,6 +21,7 @@ int removeDeadband(int input, int deadband = 20) {
 	}
 }
 
+// Waits for user to continue execution
 void wait_user(){
 	while (!vexRT(Btn7U)){
 		wait1Msec(20);
