@@ -287,6 +287,9 @@ void driveDistance(float dist, bool tolerance = false){
 	}
 }
 
+// Sets PID target forward distance dist, but returns after it has advanced forward by distance end
+// Useful for on-the-move actions
+// To wait for robot to reach final destination, call driveDistance(0)
 void startDrive(float dist, float end = 0, bool tolerance = false){
 	advance_drive_target(end);
 
@@ -314,6 +317,7 @@ void turnAngle(float ang, bool tolerance = false){
 	}
 }
 
+// Drive until the robot stops moving
 void driveWall(bool forward, int _wallPower = 80){
 	wallPower = _wallPower;
 	initPID(false);
@@ -324,6 +328,7 @@ void driveWall(bool forward, int _wallPower = 80){
 	}
 }
 
+// Faces point, drives to it, and turns to destination heading
 void driveToPoint(point dest){
 	target_p.p_t = angle_between_points(pos_p, dest);
 	turnAngle(0);
@@ -335,6 +340,9 @@ void driveToPoint(point dest){
 
 }
 
+// Drives to point by actively facing point distance offset closer to the destination
+// than the projection of the current position onto the destination line
+// Useful for driving onto a line, but causes error on omni drive from drifting sidways
 void splineDest(point dest, float offset){
 	copy_points(dest, target_p);
 	point vect;
@@ -349,6 +357,7 @@ void splineDest(point dest, float offset){
 	turnAngle(0);
 }
 
+// Drives until a button is pressed
 void driveToButton(float power, tSensors sensorPort){
 	wallPower = abs(power);
 	initPID(false);

@@ -5,8 +5,8 @@ float distD = 160;
 //STEADY DRIVE GAINS
 float diffP = 8;
 float diffI = 0.05;
-float diffD = 0.2;
+float diffD = 0.3;
 //TURN GAINS
-float turnP = 12;
+float turnP = 10;
 float turnI = 0.3;
-float turnD = 80; // OLD 80, VCAT 30
+float turnD = 55; // OLD 80, VCAT 30
