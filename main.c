@@ -33,9 +33,13 @@
 
 #define MAX_VOLTAGE 127
 
+
+#define turnScale 0.239
+
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "Helpers.c"
+#include "Odom.c"
 #include "Drive.c"
 #include "PID_DriveV2.c"
 #include "lift.c"
@@ -70,6 +74,7 @@ void pre_auton()
 task autonomous()
 {
 	disable_intake();
+	startTask(Odometry);
 	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
@@ -105,6 +110,7 @@ float aaaGyro, aaaLeftEnc, aaaRightEnc, aaapot;
 task usercontrol()
 {
 	// User control code here, inside the loop
+	startTask(Odometry);
 	startTask(PID_Drive);
 	startTask(mg_intake);
 	startTask(lift_intake_task);
@@ -119,10 +125,12 @@ task usercontrol()
 		aaaRightEnc = SensorValue(rightEncoder);
 		lift_enabled = true;
 		if(vexRT(Btn7L)){
-			driveDistance(24);
-			} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
+			//driveDistance(24);
+			turnAngle(90);
+		} else if (vexRT(Btn7R) && abs(vexRT(Ch1)) < 25){
 			//turnAngle(90);
-			} else {
+			driveDistance(12);
+		} else {
 			arcadeDrive();
 			isDriving = false;
 			isTurning = false;
@@ -173,10 +181,13 @@ task usercontrol()
 			at_loader = true;
 		}
 		if (vexRT[Btn7R]){
-			simple_auto(false);
+			//simple_auto(false);
+			driveDistance(12);
+			//turnAngle(90);
 		}
 		if(vexRT[Btn7D]){
-			resetEncoders();
+			//resetEncoders();
+			zero_odom();
 		}
 
 		// This is the main execution loop for the user control program.

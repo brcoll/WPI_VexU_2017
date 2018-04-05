@@ -7,6 +7,9 @@ float linearDistance = 0;
 float turnAng = 0;
 int maxspeed = MAX_VOLTAGE;
 
+
+bool disabled = false;
+
 //TIME FOR US TO GIVE UP
 int stuckTimeout = 1000;
 bool skills = false;
@@ -18,7 +21,7 @@ int Tight_driveErrorThreshold = 1;
 int Tight_turnErrorThreshold = 1;
 
 int DGAF_driveErrorThreshold = 2;
-int DGAF_turnErrorThreshold = 4;
+int DGAF_turnErrorThreshold = 3;
 
 
 //Linear variables
@@ -28,18 +31,7 @@ float disterror_Stuck, distderivative_Stuck, prevdisterror_Stuck =0;
 bool hitWall, hitSomething, goingBack = false, wallForward = false;
 int lastLatched, lastLatched_Stuck, startingTime, wallTime = 0;
 
-//LINEAR DRIVE GAINS
-float distP = 14;
-float distI = 0.25;
-float distD = 125;
-//STEADY DRIVE GAINS
-float diffP = 8;
-float diffI = 0.05;
-float diffD = 0.2;
-//TURN GAINS
-float turnP = 10;
-float turnI = 0.3;
-float turnD = 30; // OLD 80
+
 
 ////Return value of left encoder in inches
 //float getLeftEncoder() {
@@ -69,7 +61,7 @@ float turnD = 30; // OLD 80
 //}
 
 void initPID(bool tight = false){
-	resetEncoders();
+	//resetEncoders();
 	prevdisterror = 0;
 	prevdifferror = 0;
 	distintegral = 0;
@@ -118,8 +110,10 @@ task PID_Drive(){
 		//Runs the PID loop while isDriving is true and sets isDriving to false when done.
 		while(isDriving){
 			// Calculate both linear and difference errors
-			disterror = linearDistance - getAvgEncoder(); //Calculate distance error
-			differror = getGyro(); //Calculate difference error
+			//disterror = linearDistance - getAvgEncoder(); //Calculate distance error
+			disterror = get_drive_error();
+			//differror = getGyro(); //Calculate difference error
+			differror = -get_turn_error();
 
 			// Find the integral ONLY if within controllable range AND if the distance error is not equal to zero
 			if(abs(distderivative) < 0.375 && disterror != 0){
@@ -147,8 +141,8 @@ task PID_Drive(){
 				distspeed = -maxspeed;
 			}
 
-			motor[FLD] = motor[BLD] = distspeed - diffspeed; //Set motor values
-			motor[FRD] = motor[BRD] = distspeed + diffspeed; //Set motor values
+			leftDrive(distspeed - diffspeed); //Set motor values
+			rightDrive(distspeed + diffspeed); //Set motor values
 
 			//Find sign of output
 			if(distspeed > 0){
@@ -158,16 +152,16 @@ task PID_Drive(){
 			}
 
 			//If close to range apply negative voltage to stop robot
-			if(abs(disterror)<driveErrorThreshold){
+			if(abs(disterror)<driveErrorThreshold || disabled){
 
-				motor[FLD] = motor[BLD] = (15 * -direction);
-			  motor[FRD] = motor[BRD] = (15 * -direction);
+				leftDrive(15 * -direction);
+			  rightDrive(15 * -direction);
 				wait1Msec(20); //OLD 100
-				if(abs(distderivative) < 0.5){ //Once you stop moving reset
+				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isDriving = false;
 					linearDistance = 0;
-					motor[FLD] = motor[BLD] = 0;
-			    motor[FRD] = motor[BRD] = 0;
+					leftDrive(0);
+			    rightDrive(0);
 				}
 			}
 			//stallDetection();
@@ -186,8 +180,9 @@ task PID_Drive(){
 		//Runs the PID loop while isTurning is true and sets isTurning to false when done. Turns to the right by default for positive values.
 		while(isTurning){
 
-			disterror = turnAng - getGyro(); //Calculate distance error
+			//disterror = turnAng - getGyro(); //Calculate distance error
 			//differror = getLeftEncoder() - -1*getRightEncoder(); //Calculate difference error
+			disterror = get_turn_error();
 
 			// Find the integral ONLY if within controllable range AND if the distance error is not equal to zero
 			if( abs(disterror) < 6 && disterror != 0){
@@ -216,8 +211,8 @@ task PID_Drive(){
 				distspeed = -maxspeed;
 			}
 
-			motor[FLD] = motor[BLD] = distspeed - diffspeed; //Set motor values
-		  motor[FRD] = motor[BRD] = -1*(distspeed + diffspeed); //Set motor values //OLD *-1
+			leftDrive(distspeed - diffspeed); //Set motor values
+		  rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
 
 					//Find direction of output
 			if(distspeed > 0){
@@ -230,11 +225,11 @@ task PID_Drive(){
 			if(abs(disterror)<turnErrorThreshold){
 				//autoTurn(20 * -direction); //OLD 15
 				wait1Msec(5); //OLD 100
-				if(abs(distderivative) < 0.5){ //Once you stop moving reset
+				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isTurning = false;
 					turnAng = 0;
-					motor[FLD] = motor[BLD] = 0;
-			    motor[FRD] = motor[BRD] = 0;
+					leftDrive(0);
+			    rightDrive(0);
 				}
 			}
 			wait1Msec(20);
@@ -252,11 +247,11 @@ task PID_Drive(){
 			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
 			if(wallForward){
-				motor[FLD] = motor[BLD] = wallPower - diffspeed; //Set motor values
-				motor[FRD] = motor[BRD] = wallPower + diffspeed; //Set motor values
+				leftDrive(wallPower - diffspeed); //Set motor values
+				rightDrive(wallPower + diffspeed); //Set motor values
 			} else {
-				motor[FLD] = motor[BLD] = -wallPower - diffspeed; //Set motor values
-				motor[FRD] = motor[BRD] = -wallPower + diffspeed; //Set motor values
+				leftDrive(-wallPower - diffspeed); //Set motor values
+				rightDrive(-wallPower + diffspeed); //Set motor values
 			}
 
 			//When derivative error is less than certain value begin latching
@@ -265,13 +260,13 @@ task PID_Drive(){
 				lastLatched = nPgmTime;
 				hitWall = false;
 				} else {
-				hitWall =  nPgmTime - lastLatched > 500; //OLD 250
+				hitWall =  nPgmTime - lastLatched > 250; //OLD 250
 			}
 
 			//If hitWall and beginning time has passed stop motors and reset
 			if(startingTime < nPgmTime && hitWall){
-				motor[FLD] = motor[BLD] = 0; //Set motor values
-				motor[FRD] = motor[BRD] = 0; //Set motor values
+				leftDrive(0); //Set motor values
+				rightDrive(0); //Set motor values
 				isWall = false;
 			}
 			wait1Msec(20);
@@ -284,27 +279,82 @@ task PID_Drive(){
 //Drives given distance in inches
 void driveDistance(float dist, bool tolerance = false){
 	initPID(tolerance);
-	linearDistance = dist;
+	//linearDistance = dist;
+	advance_drive_target(dist);
 	isDriving = true;
-	while(isDriving){
-		wait1Msec(20);
-	}
-}
-//Turns given angle in degrees (right = +)
-void turnAngle(float ang, bool tolerance = false){
-	initPID(tolerance);
-	turnAng = ang;
-	isTurning = true;
-	while(isTurning){
+	while(isDriving && !disabled){
 		wait1Msec(20);
 	}
 }
 
-void driveWall(bool forward){
+void startDrive(float dist, float end = 0, bool tolerance = false){
+	advance_drive_target(end);
+
+	point waypoint;
+	copy_points(target_p, waypoint);
+
+	advance_drive_target(dist - end);
+	initPID(tolerance);
+	//linearDistance = dist;
+	isDriving = true;
+	float temp = get_coord_error(waypoint, pos_p);
+	while(get_coord_error(waypoint, pos_p) > 0 && !disabled){
+		wait1Msec(20);
+	}
+}
+
+//Turns given angle in degrees (right = +)
+void turnAngle(float ang, bool tolerance = false){
+	initPID(tolerance);
+	//turnAng = ang;
+	advance_turn_target(ang);
+	isTurning = true;
+	while(isTurning && !disabled){
+		wait1Msec(20);
+	}
+}
+
+void driveWall(bool forward, int _wallPower = 80){
+	wallPower = _wallPower;
 	initPID(false);
 	isWall=true;
 	wallForward = forward;
-	while(isWall){
+	while(isWall && !disabled){
+		wait1Msec(20);
+	}
+}
+
+void driveToPoint(point dest){
+	target_p.p_t = angle_between_points(pos_p, dest);
+	turnAngle(0);
+	target_p.p_x = dest.p_x;
+	target_p.p_y = dest.p_y;
+	driveDistance(0);
+	copy_points(dest, target_p);
+	turnAngle(0);
+
+}
+
+void splineDest(point dest, float offset){
+	copy_points(dest, target_p);
+	point vect;
+	copy_points(dest, vect);
+	isDriving = true;
+	while(isDriving && !disabled){
+		offset_on_line(vect, pos_p, offset);
+		target_p.p_t = angle_between_points(pos_p, vect);
+		wait1Msec(20);
+	}
+	copy_points(dest, target_p);
+	turnAngle(0);
+}
+
+void driveToButton(float power, tSensors sensorPort){
+	wallPower = abs(power);
+	initPID(false);
+	isWall = true;
+	while(isWall && !disabled){
+		isWall = SensorValue[sensorPort];
 		wait1Msec(20);
 	}
 }

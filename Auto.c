@@ -28,6 +28,7 @@ void get_straight_mg(int cones, int offset = 0){
 
 void deliver_to_20(){
 	driveWall(true);
+	zero_odom();
 	mg_downHold();
 	driveDistance(-5);
 	mg_upHold();
@@ -58,6 +59,7 @@ void simple_auto(bool isLeft){
 	driveDistance(-32);
 	turnAngle(45*dir);
 	driveWall(false);
+	zero_odom();
 	driveDistance(7);
 	delay(500);
 	turnAngle(95*dir);
