@@ -1,4 +1,4 @@
-
+// Flags for control loops to automatically exit
 task canceler()
 {
 	while (true){
