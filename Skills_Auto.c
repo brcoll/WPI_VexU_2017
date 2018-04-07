@@ -96,9 +96,9 @@ void corner_pass(bool is_long){
 
 void center_pass(bool first){
 	set_odom(0,0,0);
-	drop();
 
 	if (!first){
+		drop();
 		set_inner_goal(gs_down);
 		back_out();
 		turnAngle(-90);
@@ -107,11 +107,19 @@ void center_pass(bool first){
 		driveWall(false, 50);
 		set_cb_target(CB_bottom_setpoint);
 		set_odom(-2,0,0);
+		startDrive(60, 23);
+		set_outer_goal(gs_down);
 	}
-
-
-	startDrive(60, 23);
-	set_outer_goal(gs_down);
+	else {
+		set_cb_target(CB_top_setpoint);
+		startDrive(52, 23);
+		set_outer_goal(gs_down);
+		driveDistance(0);
+		drop();
+		set_cb_target(CB_bottom_setpoint);
+		cb_wait();
+	}
+	target_p.p_y = 60;
 	startDrive(0, -5);
 	grab();
 	driveDistance(0);
@@ -120,7 +128,7 @@ void center_pass(bool first){
 	drop();
 	set_CB_target(CB_bottom_setpoint);
 	CB_wait();
-	startDrive(8, 5);
+	startDrive(9, 6);
 	set_outer_goal(gs_up);
 	driveDistance(0);
 	grab();
@@ -130,7 +138,7 @@ void center_pass(bool first){
 	lineUp.p_x = -3;
 	lineUp.p_y = 116;
 	lineUp.p_t = 0;
-	splineDest(lineUp, 20);
+	splineDest(lineUp, 26);
 	driveWall(true, 127);
 	CB_wait();
 	set_inner_goal(gs_down);

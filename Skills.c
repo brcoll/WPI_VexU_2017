@@ -118,9 +118,9 @@ task usercontrol()
   	}
 
 		if(vexRT(Btn7L)){
-			//corner_pass(false);
+			corner_pass(false);
 			//driveDistance(24);
-			turnAngle(0);
+			//turnAngle(0);
 			//point first_goal;
 			//first_goal.p_x = 12;
 			//first_goal.p_y = 100;
