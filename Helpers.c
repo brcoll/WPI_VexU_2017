@@ -23,7 +23,7 @@ int removeDeadband(int input, int deadband = 20) {
 
 // Waits for user to continue execution
 void wait_user(){
-	while (!vexRT(Btn7U)){
+	while (!(vexRT(Btn7U)||vexRT(Btn7D))){
 		wait1Msec(20);
 	}
 }

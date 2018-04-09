@@ -32,18 +32,20 @@ void corner_pass(bool is_long){
 	driveToPoint(target_p);
 
 	set_outer_goal(gs_down);
-	driveToButton(80, dgtl10);
-	pos_p.p_y = 96;
-	target_p.p_y = 116;
+	target_p.p_y = 115;
 	driveDistance(0);
 	drop(true);
 	turnAngle(0);
+	wait_user(); // Temporary wait
 	set_inner_goal(gs_up);
 
 	// Get second
 	CB_setpoint = CB_hover_setpoint;
 	driveDistance(-3.5, true);
-	turnAngle(48, true);
+
+	wait_user(); // Temporary wait
+	turnAngle(53, true);
+	wait_user(); // Temporary wait
 	//startDrive(6, 3);
 	startDrive(21, 3);
 	CB_setpoint = CB_bottom_setpoint;
@@ -51,6 +53,7 @@ void corner_pass(bool is_long){
 	//turnAngle(20);
 	set_inner_goal(gs_down);
 	driveDistance(0);
+	wait_user(); // Temporary wait
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);

@@ -15,8 +15,8 @@ enum CB_state{
 	CBS_grabbing
 };
 
-float CB_Kp = 0.2;
-float CB_Kd = 1.2;
+float CB_Kp = 0.1;
+float CB_Kd = 0.2;
 
 float CB_error = 0;
 float CB_derivative = 0;
@@ -58,13 +58,16 @@ task Control_CB(){
 		CB_error = CB_setpoint - CB_position;
 		CB_derivative = (CB_derivative * CB_D_SMOOTH) + ((CB_position - CB_last) * (1 - CB_D_SMOOTH));
 		CB_power = ranged_output(CB_error * CB_Kp - CB_derivative * CB_Kd);
-		if ((CB_setpoint == CB_top_setpoint && CB_error > CB_threshold) ||
-			(CB_setpoint == CB_bottom_setpoint && CB_error < -CB_threshold)) {
-			CB_good_loops = 0;
-		}
-		else {
+		if (CB_setpoint == CB_top_setpoint && (abs(CB_error) < CB_threshold || SensorValue[CB_top])){
 			CB_good_loops ++;
-			CB_power = CB_error > 0 ? CB_hold_pwr : - CB_hold_pwr;
+			CB_power = CB_hold_pwr;
+		}
+		else if (CB_setpoint == CB_bottom_setpoint && abs(CB_error) < CB_threshold){
+			CB_good_loops ++;
+			CB_power = - CB_hold_pwr;
+		}
+		else{
+			CB_good_loops = 0;
 		}
 		set_CB_pwr(CB_power);
 		CB_last = CB_position;

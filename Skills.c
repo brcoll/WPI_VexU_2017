@@ -5,6 +5,7 @@
 #pragma config(Sensor, dgtl4,  leftEncoder,    sensorQuadEncoder)
 #pragma config(Sensor, dgtl6,  rightEncoder,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl8,  wall,           sensorSONAR_raw)
+#pragma config(Sensor, dgtl10, CB_top,         sensorTouch)
 #pragma config(Motor,  port1,           LRD,           tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           LFR,           tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFD,           tmotorVex393_MC29, openLoop)
