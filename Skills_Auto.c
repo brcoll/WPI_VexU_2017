@@ -13,7 +13,7 @@ void corner_pass(bool is_long){
 	//driveDistance(-14);
 	back_out();
 	driveDistance(3);
-	set_CB_target(CB_bottom_setpoint);
+	//set_CB_target(CB_bottom_setpoint);
 	turnAngle(-115);
 	driveWall(false, 50);
 
@@ -32,22 +32,26 @@ void corner_pass(bool is_long){
 	driveToPoint(target_p);
 
 	set_outer_goal(gs_down);
-	target_p.p_y = 115;
+	target_p.p_y = 114;
 	driveDistance(0);
+	set_inner_goal(gs_up);
 	drop(true);
 	turnAngle(0);
 	wait_user(); // Temporary wait
-	set_inner_goal(gs_up);
 
 	// Get second
 	CB_setpoint = CB_hover_setpoint;
-	driveDistance(-3.5, true);
+	driveDistance(-7, true);
 
 	wait_user(); // Temporary wait
-	turnAngle(53, true);
+	turnAngle(15, true);
+	wait_user(); // Temporary wait
+	driveDistance(12);
+	wait_user(); // Temporary wait
+	turnAngle(46);
 	wait_user(); // Temporary wait
 	//startDrive(6, 3);
-	startDrive(21, 3);
+	startDrive(14, 3);
 	CB_setpoint = CB_bottom_setpoint;
 	//driveDistance(6);
 	//turnAngle(20);
