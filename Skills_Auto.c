@@ -51,7 +51,7 @@ void corner_pass(bool is_long){
 	turnAngle(46);
 	wait_user(); // Temporary wait
 	//startDrive(6, 3);
-	startDrive(14, 3);
+	startDrive(13, 3);
 	CB_setpoint = CB_bottom_setpoint;
 	//driveDistance(6);
 	//turnAngle(20);
@@ -61,7 +61,7 @@ void corner_pass(bool is_long){
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	target_p.p_t = 74;
+	target_p.p_t = 80;
 	turnAngle(0);
 
 	// Go place
