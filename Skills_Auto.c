@@ -13,11 +13,16 @@ void corner_pass(bool is_long){
 	//driveDistance(-14);
 	back_out();
 	driveDistance(3);
-	//set_CB_target(CB_bottom_setpoint);
+	set_CB_target(CB_bottom_setpoint);
 	turnAngle(-115);
 	driveWall(false, 50);
 
-	set_odom(ACP_CP_T, ACP_CP_X, 50);
+	if (pos_p.p_t < 87){
+		set_odom(ACP_CP_T, ACP_CP_X, 50);
+	}
+	else {
+		set_odom(90, ACP_CP_X, 52);
+	}
 	set_target(ACP_CP_T, 12, 50.5);
 	driveDistance(0, true);
 	set_target(0, 13.5, 69);
@@ -32,7 +37,7 @@ void corner_pass(bool is_long){
 	driveToPoint(target_p);
 
 	set_outer_goal(gs_down);
-	target_p.p_y = 114;
+	target_p.p_y = 110;
 	driveDistance(0);
 	set_inner_goal(gs_up);
 	drop(true);
@@ -41,18 +46,25 @@ void corner_pass(bool is_long){
 
 	// Get second
 	CB_setpoint = CB_hover_setpoint;
-	driveDistance(-7, true);
+	//driveDistance(-7, true);
 
 	wait_user(); // Temporary wait
-	turnAngle(15, true);
+	turnAngle(20, true);
 	wait_user(); // Temporary wait
-	driveDistance(12);
+	set_cb_target(CB_bottom_setpoint);
+	startDrive(12, 6);
+	grab();
+	CB_setpoint = CB_top_setpoint;
+	driveDistance(0);
 	wait_user(); // Temporary wait
-	turnAngle(46);
+	driveDistance(-4.5, true);
+	wait_user(); // Temporary wait
+	turnAngle(40);
+	cb_wait();
+	drop();
 	wait_user(); // Temporary wait
 	//startDrive(6, 3);
-	startDrive(13, 3);
-	CB_setpoint = CB_bottom_setpoint;
+	startDrive(14, 4);
 	//driveDistance(6);
 	//turnAngle(20);
 	set_inner_goal(gs_down);
