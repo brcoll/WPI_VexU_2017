@@ -137,7 +137,7 @@ task usercontrol()
 			programming_skills();
 		} else if (vexRT(Btn7D) && abs(vexRT(Ch1)) < 25){
 			////turnAngle(90);
-			//set_odom(83, 7, 50);
+			//set_odom(-137, 16, 30);
 			//set_odom(ACP_CP_T, ACP_CP_X, 50);
 			//set_odom(0, 0, 0);
 			worst_bat = nImmediateBatteryLevel;

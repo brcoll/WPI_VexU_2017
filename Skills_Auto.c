@@ -8,21 +8,25 @@ void back_out(){
 #define ACP_CP_T 83
 #define ACP_CP_X 10
 
+float slide_t = 0;
+
 void corner_pass(bool is_long){
 	set_odom(-137, 16, 30);
-	//driveDistance(-14);
+
 	back_out();
 	driveDistance(3);
 	set_CB_target(CB_bottom_setpoint);
 	turnAngle(-115);
-	driveWall(false, 50);
+	driveWall(false, 70);
 
+	slide_t = pos_p.p_t;
 	if (pos_p.p_t < 87){
 		set_odom(ACP_CP_T, ACP_CP_X, 50);
 	}
 	else {
 		set_odom(90, ACP_CP_X, 52);
 	}
+
 	set_target(ACP_CP_T, 12, 50.5);
 	driveDistance(0, true);
 	set_target(0, 13.5, 69);
@@ -33,14 +37,17 @@ void corner_pass(bool is_long){
 	set_CB_target(CB_top_setpoint);
 	target_p.p_x = 13.5;
 	target_p.p_y = 90;
+	target_p.p_t = 0;
 
 	driveToPoint(target_p);
 
 	set_outer_goal(gs_down);
 	target_p.p_y = 110;
-	driveDistance(0);
+	startDrive(0, -4);
 	set_inner_goal(gs_up);
 	drop(true);
+	driveDistance(0);
+	target_p.p_t = 0;
 	turnAngle(0);
 	wait_user(); // Temporary wait
 
@@ -57,9 +64,9 @@ void corner_pass(bool is_long){
 	CB_setpoint = CB_top_setpoint;
 	driveDistance(0);
 	wait_user(); // Temporary wait
-	driveDistance(-4.5, true);
+	driveDistance(-5, true);
 	wait_user(); // Temporary wait
-	turnAngle(40);
+	turnAngle(45);
 	cb_wait();
 	drop();
 	wait_user(); // Temporary wait
@@ -86,8 +93,8 @@ void corner_pass(bool is_long){
 	//driveWall(true);
 
 	point lineUp;
-	lineUp.p_x = 100;
-	lineUp.p_y = 107;
+	lineUp.p_x = 102;
+	lineUp.p_y = 105;
 	lineUp.p_t = 45;
 	splineDest(lineUp, 24);
 
@@ -131,10 +138,11 @@ void center_pass(bool first){
 	}
 	else {
 		set_cb_target(CB_top_setpoint);
-		startDrive(52, 23);
+		startDrive(45, 23);
 		set_outer_goal(gs_down);
 		driveDistance(0);
 		drop();
+
 		set_cb_target(CB_bottom_setpoint);
 		cb_wait();
 	}
@@ -142,7 +150,9 @@ void center_pass(bool first){
 	startDrive(0, -5);
 	grab();
 	driveDistance(0);
+	pos_p.p_x = 0;
 	set_CB_target(CB_top_setpoint);
+	turnAngle(0);
 	CB_wait();
 	drop();
 	set_CB_target(CB_bottom_setpoint);

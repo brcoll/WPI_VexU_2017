@@ -24,7 +24,7 @@ bool odom_reset = false;
 point target_p; // Target position
 point pos_p; // Current position
 
-#define SONAR_TO_IN 152.3 // Conversion factor (reads raw for better resolution)
+#define SONAR_TO_IN 148 // Conversion factor (reads raw for better resolution)
 #define UPDATE_WEIGHT .06 // For exponential smoothing
 #define WALL_READ_DIST 20 // Threshold distance to wall
 

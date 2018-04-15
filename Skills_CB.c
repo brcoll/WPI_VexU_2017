@@ -54,17 +54,22 @@ void drop(bool full = false){
 #define CB_E_SMOOTH .6
 task Control_CB(){
 	while (true){
+		update_goals(); // Update mobile goal state to avoid extra task
+
 		CB_position = (CB_position * CB_E_SMOOTH) + (SensorValue[cb_pot] * (1 - CB_E_SMOOTH));
 		CB_error = CB_setpoint - CB_position;
 		CB_derivative = (CB_derivative * CB_D_SMOOTH) + ((CB_position - CB_last) * (1 - CB_D_SMOOTH));
 		CB_power = ranged_output(CB_error * CB_Kp - CB_derivative * CB_Kd);
-		if (CB_setpoint == CB_top_setpoint && (abs(CB_error) < CB_threshold || SensorValue[CB_top])){
+		if (CB_setpoint == CB_top_setpoint && (abs(CB_error) < CB_threshold || SensorValue[CB_top])){ // Is up
 			CB_good_loops ++;
 			CB_power = CB_hold_pwr;
 		}
-		else if (CB_setpoint == CB_bottom_setpoint && abs(CB_error) < CB_threshold){
+		else if (CB_setpoint == CB_bottom_setpoint && abs(CB_error) < CB_threshold){ // Is down
 			CB_good_loops ++;
 			CB_power = - CB_hold_pwr;
+		}
+		else if (CB_setpoint == CB_bottom_setpoint && CB_position < 1000 && CB_position > 750 && CB_derivative < .001){ // Hit cone
+			CB_good_loops ++;
 		}
 		else{
 			CB_good_loops = 0;
