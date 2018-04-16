@@ -1,3 +1,9 @@
+#define SKILLS
+
+#define MAX_VOLTAGE 127
+#define turnScale .01152
+#define TICKS_PER_REV 1024
+
 //LINEAR DRIVE GAINS
 float distP = 26;
 float distI = 0.25;

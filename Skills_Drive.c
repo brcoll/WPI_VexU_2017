@@ -15,14 +15,6 @@ void resetEncoders() {
 	SensorValue(rightEncoder) = 0;
 }
 
-float getLeftEncoder() {
-	return ((float)SensorValue(leftEncoder) / 360.0) * 3.25 * PI;
-}
-
-float getRightEncoder() {
-	return ((float)SensorValue(rightEncoder) / 360.0) * 3.25 * PI;
-}
-
 float getGyro(){
 	return (SensorValue(leftEncoder) - SensorValue(rightEncoder)) * 0.239;
 }

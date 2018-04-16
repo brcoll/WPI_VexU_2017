@@ -28,8 +28,8 @@ int DGAF_turnErrorThreshold = 3;
 float disterror, differror, distintegral, diffintegral,  distspeed, diffspeed, direction = 0;
 float distderivative, diffderivative, prevdisterror, prevdifferror = 0;
 float disterror_Stuck, distderivative_Stuck, prevdisterror_Stuck =0;
-bool hitWall, hitSomething, goingBack = false, wallForward = false;
-int lastLatched, lastLatched_Stuck, startingTime, wallTime = 0;
+bool leftHitWall, rightHitWall, hitSomething, goingBack = false, wallForward = false;
+int leftLastLatched, rightLastLatched, lastLatched_Stuck, startingTime, wallTime = 0;
 
 
 
@@ -67,9 +67,11 @@ void initPID(bool tight = false){
 	distintegral = 0;
 	diffintegral = 0;
 	disterror_Stuck = distderivative_Stuck = prevdisterror_Stuck = 0;
-	lastLatched = nPgmTime;
+	leftLastLatched = nPgmTime;
+	rightLastLatched = nPgmTime;
 	lastLatched_Stuck = nPgmTime;
-	hitWall = false;
+	leftHitWall = false;
+	rightHitWall = false;
 	hitSomething = false;
 	startingTime = nPgmTime + wallTime;
 	goingBack = false;
@@ -87,7 +89,7 @@ void initPID(bool tight = false){
 
 void stallDetection(){
 	//Calculate if we can't move
-	disterror_Stuck = getAvgEncoder(); //Get encoder value
+	disterror_Stuck = get_drive_error(); //Get encoder value
 	distderivative_Stuck = disterror_Stuck - prevdisterror_Stuck; //Calculate distance derivative
 	prevdisterror_Stuck = disterror_Stuck; //Update previous distance error
 
@@ -235,8 +237,8 @@ task PID_Drive(){
 			wait1Msec(20);
 		}
 		while(isWall){
-			disterror = getAvgEncoder();
-			differror = 0; //getGyro(); //Calculate difference error
+			disterror = getLeftEncoder();
+			differror = getRightEncoder(); //getGyro(); //Calculate difference error
 
 			distderivative = disterror - prevdisterror; //Calculate distance derivative
 			diffderivative = differror - prevdifferror; //Calculate difference derivative
@@ -244,27 +246,34 @@ task PID_Drive(){
 			prevdisterror = disterror; //Update previous distance error
 			prevdifferror = differror; //Update previous difference error
 
-			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
+			//diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
 			if(wallForward){
-				leftDrive(wallPower - diffspeed); //Set motor values
-				rightDrive(wallPower + diffspeed); //Set motor values
+				leftDrive(leftHitWall ? 0 : wallPower); //Set motor values
+				rightDrive(rightHitWall ? 0 : wallPower); //Set motor values
 			} else {
-				leftDrive(-wallPower - diffspeed); //Set motor values
-				rightDrive(-wallPower + diffspeed); //Set motor values
+				leftDrive(leftHitWall ? -0 : -wallPower); //Set motor values
+				rightDrive(rightHitWall ? -0 : -wallPower); //Set motor values
 			}
 
 			//When derivative error is less than certain value begin latching
 			//If latched for more than certain time set hitWall to true
-			if(abs(distderivative) > 0.25){ //0.2
-				lastLatched = nPgmTime;
-				hitWall = false;
+			if(abs(distderivative) > 0.25 && !leftHitWall){ //0.2
+				leftLastLatched = nPgmTime;
+				leftHitWall = false;
 				} else {
-				hitWall =  nPgmTime - lastLatched > 250; //OLD 250
+				leftHitWall =  nPgmTime - leftLastLatched > 250; //OLD 250
+			}
+
+			if(abs(diffderivative) > 0.25 && !rightHitWall){ //0.2
+				rightLastLatched = nPgmTime;
+				rightHitWall = false;
+				} else {
+				rightHitWall =  nPgmTime - rightLastLatched > 250; //OLD 250
 			}
 
 			//If hitWall and beginning time has passed stop motors and reset
-			if(startingTime < nPgmTime && hitWall){
+			if(startingTime < nPgmTime && leftHitWall && rightHitWall){
 				leftDrive(0); //Set motor values
 				rightDrive(0); //Set motor values
 				isWall = false;

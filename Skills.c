@@ -30,9 +30,6 @@
 // Select Download method as "competition"
 #pragma competitionControl(Competition)
 
-#define MAX_VOLTAGE 127
-
-#define turnScale .01152
 // Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
@@ -182,7 +179,8 @@ task usercontrol()
 				//corner_pass(false);
 				//center_pass(true);
 				//back_out();
-				score_cone();
+				//score_cone();
+				driveWall(false);
 				//driveDistance(0);
 				} else {
 				arcadeDrive();
@@ -208,9 +206,12 @@ task usercontrol()
 		}
 
 		if(vexRT(Btn8U)){
+			grab();
 			CB_setpoint = CB_top_setpoint;
 		}
 		else if (vexRT(Btn8D)){
+			CB_wait();
+			drop();
 			CB_setpoint = CB_bottom_setpoint;
 		}
 

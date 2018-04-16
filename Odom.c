@@ -28,6 +28,7 @@ point pos_p; // Current position
 #define UPDATE_WEIGHT .06 // For exponential smoothing
 #define WALL_READ_DIST 20 // Threshold distance to wall
 
+#ifdef SKILLS
 // Conversion factor
 float distToWall(){
 	return SensorValue[wall]/SONAR_TO_IN + 4.5;
@@ -52,10 +53,23 @@ void senseWall(){
 		}
 	}
 }
+#else
+void senseWall(){
+	return;
+}
+#endif
 
 // Convert ticks to inches
 float ticksToIn(long ticks){
-	return ((float)ticks / 1024 / 4) * 3.25 * PI;
+	return ((float)ticks / TICKS_PER_REV / 4) * 3.25 * PI;
+}
+
+float getLeftEncoder() {
+	return ticksToIn(SensorValue[leftEncoder]);
+}
+
+float getRightEncoder() {
+	return ticksToIn(SensorValue[rightEncoder]);
 }
 
 // Main position tracking task

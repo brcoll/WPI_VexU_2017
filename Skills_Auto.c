@@ -20,7 +20,8 @@ void corner_pass(bool is_long){
 	driveWall(false, 70);
 
 	slide_t = pos_p.p_t;
-	if (pos_p.p_t < 87){
+
+	if (pos_p.p_t < 87){ // Correct for if you miss line up
 		set_odom(ACP_CP_T, ACP_CP_X, 50);
 	}
 	else {
@@ -43,10 +44,9 @@ void corner_pass(bool is_long){
 
 	set_outer_goal(gs_down);
 	target_p.p_y = 110;
-	startDrive(0, -8);
+	driveDistance(0);
 	set_inner_goal(gs_up);
 	drop(true);
-	driveDistance(0);
 	target_p.p_t = 0;
 	//turnAngle(0);
 	wait_user(); // Temporary wait
@@ -59,12 +59,12 @@ void corner_pass(bool is_long){
 	turnAngle(20, true);
 	wait_user(); // Temporary wait
 	set_cb_target(CB_bottom_setpoint);
-	startDrive(10, 6);
+	startDrive(8, 6);
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	driveDistance(0);
 	wait_user(); // Temporary wait
-	driveDistance(-5, true);
+	driveDistance(-4, true);
 	wait_user(); // Temporary wait
 	turnAngle(42);
 	cb_wait();
@@ -84,7 +84,7 @@ void corner_pass(bool is_long){
 	turnAngle(0);
 
 	// Go place
-	startDrive(40, 10);
+	startDrive(50, 10);
 	//SensorValue[intake_piston] = 1;
 	//driveDistance(0);
 	//turnAngle(45);
@@ -95,7 +95,7 @@ void corner_pass(bool is_long){
 	point lineUp;
 	lineUp.p_x = 102;
 	lineUp.p_y = 105;
-	lineUp.p_t = 45;
+	lineUp.p_t = 46;
 	splineDest(lineUp, 24);
 
 	driveWall(true, 127);
