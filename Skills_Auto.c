@@ -43,12 +43,12 @@ void corner_pass(bool is_long){
 
 	set_outer_goal(gs_down);
 	target_p.p_y = 110;
-	startDrive(0, -4);
+	startDrive(0, -8);
 	set_inner_goal(gs_up);
 	drop(true);
 	driveDistance(0);
 	target_p.p_t = 0;
-	turnAngle(0);
+	//turnAngle(0);
 	wait_user(); // Temporary wait
 
 	// Get second
@@ -59,14 +59,14 @@ void corner_pass(bool is_long){
 	turnAngle(20, true);
 	wait_user(); // Temporary wait
 	set_cb_target(CB_bottom_setpoint);
-	startDrive(12, 6);
+	startDrive(10, 6);
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	driveDistance(0);
 	wait_user(); // Temporary wait
 	driveDistance(-5, true);
 	wait_user(); // Temporary wait
-	turnAngle(45);
+	turnAngle(42);
 	cb_wait();
 	drop();
 	wait_user(); // Temporary wait
@@ -80,7 +80,7 @@ void corner_pass(bool is_long){
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	target_p.p_t = 80;
+	target_p.p_t = 85;
 	turnAngle(0);
 
 	// Go place
@@ -128,7 +128,7 @@ void center_pass(bool first){
 		set_inner_goal(gs_down);
 		back_out();
 		turnAngle(-90);
-		driveDistance(24, true);
+		driveDistance(23, true);
 		turnAngle(-90);
 		driveWall(false, 50);
 		set_cb_target(CB_bottom_setpoint);
@@ -164,7 +164,7 @@ void center_pass(bool first){
 	set_CB_target(CB_top_setpoint);
 
 	point lineUp;
-	lineUp.p_x = -3;
+	lineUp.p_x = -5;
 	lineUp.p_y = 116;
 	lineUp.p_t = 0;
 	splineDest(lineUp, 26);
