@@ -1,6 +1,6 @@
 int CB_top_setpoint = 2900;
 int CB_bottom_setpoint = 580;
-int CB_hover_setpoint = 1500;
+int CB_hover_setpoint = 1300;
 int CB_threshold = 220;
 int CB_hold_pwr = 20;
 int CB_setpoint = CB_bottom_setpoint;

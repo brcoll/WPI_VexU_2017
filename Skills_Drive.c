@@ -8,6 +8,7 @@ float avgEncoders;
 int drivePIDOutput;
 bool driveDone = false;
 bool turnDone = false;
+int max_speed = 127;
 
 
 void resetEncoders() {
@@ -31,6 +32,22 @@ void leftDrive(int voltage){
 //Drives the right drive at the given voltage.
 void rightDrive(int voltage){
 	motor(RRD) = motor(RRR) = motor(RFD) = motor(RFR) = removeDeadband(voltage);
+}
+
+void CurvatureDrive(int ySpeed, int zRotation){
+	ySpeed = clamp(ySpeed, 127);
+	zRotation = clamp(zRotation, 127);
+
+	double leftOutput = ySpeed - zRotation;
+	double rightOutput = ySpeed + zRotation;
+	double maxInputMag = max(abs(ySpeed), abs(zRotation));
+	if (maxInputMag > 127) {
+		leftOutput /= maxInputMag;
+		rightOutput /= maxInputMag;
+	}
+
+	leftDrive(leftOutput * max_speed);
+	rightDrive(rightOutput * max_speed);
 }
 
 //ARCADE DRIVE SYSTEM

@@ -103,6 +103,7 @@ task autonomous()
 int pot_val = 0;
 float worst_bat = 0;
 int debug = 0;
+float newWaypoint[2] = {5, 20};
 task usercontrol()
 {
 	// User control code here, inside the loop
@@ -180,7 +181,8 @@ task usercontrol()
 				//center_pass(true);
 				//back_out();
 				//score_cone();
-				driveWall(false);
+				driveToWaypoint(newWaypoint, 15);
+				//driveWall(false);
 				//driveDistance(0);
 				} else {
 				arcadeDrive();

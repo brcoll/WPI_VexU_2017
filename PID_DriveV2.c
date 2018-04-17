@@ -5,7 +5,7 @@ bool isWall = false;
 int wallPower = 80;
 float linearDistance = 0;
 float turnAng = 0;
-int maxspeed = MAX_VOLTAGE;
+//int maxspeed = 127;
 
 
 bool disabled = false;
@@ -57,7 +57,7 @@ int leftLastLatched, rightLastLatched, lastLatched_Stuck, startingTime, wallTime
 //Turns robot at specific voltage
 //void autoTurn(int voltage) {
 //	motor(LD1) = motor(LD2) = motor(LD3) = voltage;
-	//motor(RD1)  = motor(RD2) = motor(RD3) = -voltage;
+//motor(RD1)  = motor(RD2) = motor(RD3) = -voltage;
 //}
 
 void initPID(bool tight = false){
@@ -133,18 +133,20 @@ task PID_Drive(){
 			distspeed = (disterror * distP) + (distintegral * distI) + (distderivative * distD); //Calculate distance speed
 			diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
-			//Check that the speed is not exceeding the maximum set speed
-			if(distspeed > maxspeed){
-				distspeed = maxspeed;
-			}
+			////Check that the speed is not exceeding the maximum set speed
+			//if(distspeed > maxspeed){
+			//	distspeed = maxspeed;
+			//}
 
-			//Check that the speed is not exceeding the maximum set speed
-			if(distspeed < -maxspeed){
-				distspeed = -maxspeed;
-			}
+			////Check that the speed is not exceeding the maximum set speed
+			//if(distspeed < -maxspeed){
+			//	distspeed = -maxspeed;
+			//}
 
-			leftDrive(distspeed - diffspeed); //Set motor values
-			rightDrive(distspeed + diffspeed); //Set motor values
+			//leftDrive(distspeed - diffspeed); //Set motor values
+			//rightDrive(distspeed + diffspeed); //Set motor values
+
+			CurvatureDrive(distspeed,diffspeed);
 
 			//Find sign of output
 			if(distspeed > 0){
@@ -156,14 +158,14 @@ task PID_Drive(){
 			//If close to range apply negative voltage to stop robot
 			if(abs(disterror)<driveErrorThreshold || disabled){
 
-				leftDrive(15 * -direction);
-			  rightDrive(15 * -direction);
+				leftDrive(distBreak * -direction);
+				rightDrive(distBreak * -direction);
 				wait1Msec(20); //OLD 100
 				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isDriving = false;
 					linearDistance = 0;
 					leftDrive(0);
-			    rightDrive(0);
+					rightDrive(0);
 				}
 			}
 			//stallDetection();
@@ -203,20 +205,10 @@ task PID_Drive(){
 			//diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 			diffspeed = 0; //TODO: Consider implementing this
 
-			//Check that the speed is not exceeding the maximum set speed
-			if(distspeed > maxspeed){
-				distspeed = maxspeed;
-			}
-
-			//Check that the speed is not exceeding the maximum set speed
-			if(distspeed < -maxspeed){
-				distspeed = -maxspeed;
-			}
-
 			leftDrive(distspeed - diffspeed); //Set motor values
-		  rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
+			rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
 
-					//Find direction of output
+			//Find direction of output
 			if(distspeed > 0){
 				direction = 1;
 				} else {
@@ -231,7 +223,7 @@ task PID_Drive(){
 					isTurning = false;
 					turnAng = 0;
 					leftDrive(0);
-			    rightDrive(0);
+					rightDrive(0);
 				}
 			}
 			wait1Msec(20);
@@ -251,7 +243,7 @@ task PID_Drive(){
 			if(wallForward){
 				leftDrive(leftHitWall ? 0 : wallPower); //Set motor values
 				rightDrive(rightHitWall ? 0 : wallPower); //Set motor values
-			} else {
+				} else {
 				leftDrive(leftHitWall ? -0 : -wallPower); //Set motor values
 				rightDrive(rightHitWall ? -0 : -wallPower); //Set motor values
 			}
@@ -284,6 +276,7 @@ task PID_Drive(){
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 //Drives given distance in inches
 void driveDistance(float dist, bool tolerance = false){
@@ -339,14 +332,14 @@ void driveWall(bool forward, int _wallPower = 80){
 
 // Faces point, drives to it, and turns to destination heading
 void driveToPoint(point dest){
+	float final_t = dest.p_t;
 	target_p.p_t = angle_between_points(pos_p, dest);
 	turnAngle(0);
 	target_p.p_x = dest.p_x;
 	target_p.p_y = dest.p_y;
 	driveDistance(0);
-	copy_points(dest, target_p);
+	target_p.p_t = final_t;
 	turnAngle(0);
-
 }
 
 // Drives to point by actively facing point distance offset closer to the destination
@@ -364,6 +357,18 @@ void splineDest(point dest, float offset){
 	}
 	copy_points(dest, target_p);
 	turnAngle(0);
+}
+
+// Corrects for side of field, then calls driveToPoint() or splineDest() if spline offset is provided
+void driveToWaypoint(float *sc_waypoint, float heading, float spline_offset = 0){
+	point fc_waypoint;
+	translate_side(sc_waypoint, heading, fc_waypoint);
+	if (!spline_offset){
+		driveToPoint(fc_waypoint);
+	}
+	else {
+		splineDest(fc_waypoint, spline_offset);
+	}
 }
 
 // Drives until a button is pressed

@@ -23,6 +23,7 @@ bool odom_reset = false;
 
 point target_p; // Target position
 point pos_p; // Current position
+bool is_left = true;
 
 #define SONAR_TO_IN 148 // Conversion factor (reads raw for better resolution)
 #define UPDATE_WEIGHT .06 // For exponential smoothing
@@ -206,6 +207,19 @@ float angle_between_points(point start_p, point end_p){
   pointY = pointY ? pointY : pointY + .01;
 
 	return ((atan(pointX/pointY) * 57.2958) + ((pointY < 0)* 180))%360 ;
+}
+
+// Translates from side centric to field centric
+void translate_side(float *point_in, float heading, point &point_out){
+	if (is_left){
+		point_out.p_x = point_in[0];
+		point_out.p_y = point_in[1];
+		point_out.p_t = heading;
+	} else {
+		point_out.p_x = point_in[1];
+		point_out.p_y = point_in[0];
+		point_out.p_t = 90-heading;
+	}
 }
 
 // Sets position, and target to zero

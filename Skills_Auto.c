@@ -1,12 +1,12 @@
 void back_out(){
-	int oldmax = maxspeed;
-	maxspeed = 50;
+	int oldmax = max_speed;
+	max_speed = 50;
 	driveDistance(-19);
-	maxspeed = oldmax;
+	max_speed = oldmax;
 }
 
 #define ACP_CP_T 83
-#define ACP_CP_X 10
+#define ACP_CP_X 9
 
 float slide_t = 0;
 
@@ -59,7 +59,7 @@ void corner_pass(bool is_long){
 	turnAngle(20, true);
 	wait_user(); // Temporary wait
 	set_cb_target(CB_bottom_setpoint);
-	startDrive(8, 6);
+	startDrive(8, 5);
 	grab();
 	CB_setpoint = CB_top_setpoint;
 	driveDistance(0);
@@ -71,7 +71,7 @@ void corner_pass(bool is_long){
 	drop();
 	wait_user(); // Temporary wait
 	//startDrive(6, 3);
-	startDrive(14, 4);
+	startDrive(20, 4);
 	//driveDistance(6);
 	//turnAngle(20);
 	set_inner_goal(gs_down);
