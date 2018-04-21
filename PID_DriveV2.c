@@ -205,9 +205,6 @@ task PID_Drive(){
 			//diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 			diffspeed = 0; //TODO: Consider implementing this
 
-			leftDrive(distspeed - diffspeed); //Set motor values
-			rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
-
 			//Find direction of output
 			if(distspeed > 0){
 				direction = 1;
@@ -219,12 +216,21 @@ task PID_Drive(){
 			if(abs(disterror)<turnErrorThreshold){
 				//autoTurn(20 * -direction); //OLD 15
 				wait1Msec(5); //OLD 100
+				distspeed = clamp(distspeed, 10);
+				leftDrive(distspeed - diffspeed); //Set motor values
+				rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
 				if(abs(distderivative) < 0.5 || disabled){ //Once you stop moving reset
 					isTurning = false;
 					turnAng = 0;
 					leftDrive(0);
 					rightDrive(0);
 				}
+			}
+			else {
+				distspeed = anticlamp(distspeed, 25);
+
+				leftDrive(distspeed - diffspeed); //Set motor values
+				rightDrive(-1*(distspeed + diffspeed)); //Set motor values //OLD *-1
 			}
 			wait1Msec(20);
 		}
@@ -241,11 +247,11 @@ task PID_Drive(){
 			//diffspeed = (differror * diffP) + (diffintegral * diffI) + (diffderivative* diffD); //Calculate difference (turn) speed
 
 			if(wallForward){
-				leftDrive(leftHitWall ? 0 : wallPower); //Set motor values
-				rightDrive(rightHitWall ? 0 : wallPower); //Set motor values
+				leftDrive(leftHitWall ? 30 : wallPower); //Set motor values
+				rightDrive(rightHitWall ? 30 : wallPower); //Set motor values
 				} else {
-				leftDrive(leftHitWall ? -0 : -wallPower); //Set motor values
-				rightDrive(rightHitWall ? -0 : -wallPower); //Set motor values
+				leftDrive(leftHitWall ? -30 : -wallPower); //Set motor values
+				rightDrive(rightHitWall ? -30 : -wallPower); //Set motor values
 			}
 
 			//When derivative error is less than certain value begin latching

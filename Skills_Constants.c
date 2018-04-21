@@ -6,14 +6,14 @@
 
 float distBreak = 15;
 //LINEAR DRIVE GAINS
-float distP = 26;
+float distP = 20;
 float distI = 0.25;
-float distD = 180;
+float distD = 110;
 //STEADY DRIVE GAINS
 float diffP = 8;
 float diffI = 0.05;
 float diffD = 0.3;
 //TURN GAINS
-float turnP = 6.5;
-float turnI = 0.4;
-float turnD = 35; // OLD 80, VCAT 30
+float turnP = 5;
+float turnI = 0.2;
+float turnD = 25; // OLD 80, VCAT 30

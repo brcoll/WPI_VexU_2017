@@ -25,6 +25,20 @@ int clamp(int input, int clampValue = 127){
 	return input;
 }
 
+
+int anticlamp(int input, int clampValue = 30){
+	//Check that the speed is not exceeding the maximum set speed
+	if(input < clampValue && input > 0){
+		input = clampValue;
+	}
+
+	//Check that the speed is not exceeding the maximum set speed
+	if(input > -clampValue && input < 0){
+		input = -clampValue;
+	}
+	return input;
+}
+
 int max(int in1, int in2){
 	if(in1 > in2){
 		return in1;

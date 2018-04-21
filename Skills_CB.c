@@ -1,6 +1,6 @@
 int CB_top_setpoint = 2900;
-int CB_bottom_setpoint = 580;
-int CB_hover_setpoint = 1300;
+int CB_bottom_setpoint = 500;
+int CB_hover_setpoint = 1100;
 int CB_threshold = 220;
 int CB_hold_pwr = 20;
 int CB_setpoint = CB_bottom_setpoint;
@@ -42,6 +42,12 @@ void grab(){
 	}
 }
 
+void smart_wait(int ms){
+	if (!disabled){
+		wait1Msec(ms);
+	}
+}
+
 void drop(bool full = false){
 	if (!SensorValue[intake_piston] && !disabled){
 		SensorValue[intake_piston] = 1;
@@ -64,9 +70,9 @@ task Control_CB(){
 			CB_good_loops ++;
 			CB_power = CB_hold_pwr;
 		}
-		else if (CB_setpoint == CB_bottom_setpoint && abs(CB_error) < CB_threshold){ // Is down
+		else if (CB_setpoint == CB_bottom_setpoint && (abs(CB_error) < CB_threshold || SensorValue[CB_bottom])){ // Is down
 			CB_good_loops ++;
-			CB_power = - CB_hold_pwr;
+			CB_power = SensorValue[CB_bottom] ? - CB_hold_pwr : - 2 * CB_hold_pwr;
 		}
 		else if (CB_setpoint == CB_bottom_setpoint && CB_position < 1000 && CB_position > 750 && CB_derivative < .001){ // Hit cone
 			CB_good_loops ++;

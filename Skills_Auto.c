@@ -1,16 +1,16 @@
 void back_out(){
 	int oldmax = max_speed;
-	max_speed = 50;
+	max_speed = 40;
 	driveDistance(-19);
 	max_speed = oldmax;
 }
 
 #define ACP_CP_T 83
-#define ACP_CP_X 9
+#define ACP_CP_X 8
 
 float slide_t = 0;
 
-void corner_pass(bool is_long){
+void corner_pass(bool is_long, bool is_manual = false){
 	set_odom(-137, 16, 30);
 
 	back_out();
@@ -25,12 +25,12 @@ void corner_pass(bool is_long){
 		set_odom(ACP_CP_T, ACP_CP_X, 50);
 	}
 	else {
-		set_odom(90, ACP_CP_X, 52);
+		set_odom(90, ACP_CP_X, 51);
 	}
 
-	set_target(ACP_CP_T, 12, 50.5);
+	set_target(ACP_CP_T, 13, 50.5);
 	driveDistance(0, true);
-	set_target(0, 13.5, 69);
+	set_target(0, 13.5, 68);
 	turnAngle(0, true);
 	driveDistance(0);
 
@@ -40,12 +40,13 @@ void corner_pass(bool is_long){
 	target_p.p_y = 90;
 	target_p.p_t = 0;
 
-	driveToPoint(target_p);
+	splineDest(target_p, 24);
 
 	set_outer_goal(gs_down);
-	target_p.p_y = 108;
+	target_p.p_y = 104;
 	driveDistance(0);
 	set_inner_goal(gs_up);
+	smart_wait(200);
 	drop(true);
 	target_p.p_t = 0;
 	//turnAngle(0);
@@ -56,37 +57,37 @@ void corner_pass(bool is_long){
 	//driveDistance(-7, true);
 
 	wait_user(); // Temporary wait
-	turnAngle(20, true);
+	turnAngle(18, true);
 	wait_user(); // Temporary wait
 	set_cb_target(CB_bottom_setpoint);
-	startDrive(8, 5);
-	grab();
-	CB_setpoint = CB_top_setpoint;
-	driveDistance(0);
+	driveDistance(9);
+	//grab();
+	//CB_setpoint = CB_top_setpoint;
 	wait_user(); // Temporary wait
-	driveDistance(-5, true);
+	//driveDistance(-4, true);
 	wait_user(); // Temporary wait
-	turnAngle(40);
+	turnAngle(42);
 	cb_wait();
 	drop();
 	wait_user(); // Temporary wait
 	//startDrive(6, 3);
-	startDrive(20, 4);
+	startDrive(18, 4);
 	//driveDistance(6);
 	//turnAngle(20);
 	set_inner_goal(gs_down);
 	driveDistance(0);
 	wait_user(); // Temporary wait
-	grab();
-	CB_setpoint = CB_top_setpoint;
 	set_outer_goal(gs_up);
-	target_p.p_t = 85;
-	turnAngle(0);
+	target_p.p_t = 90;
+	//turnAngle(0);
 
 	// Go place
-	startDrive(50, 10);
+	startDrive(14, 6);
+	grab();
+	CB_setpoint = CB_top_setpoint;
 	//SensorValue[intake_piston] = 1;
-	//driveDistance(0);
+	driveDistance(0);
+	wait_user(); // Temporary wait
 	//turnAngle(45);
 	//driveDistance(20);
 	//turnAngle(-90);
@@ -95,8 +96,8 @@ void corner_pass(bool is_long){
 	point lineUp;
 	lineUp.p_x = 102;
 	lineUp.p_y = 105;
-	lineUp.p_t = 46;
-	splineDest(lineUp, 24);
+	lineUp.p_t = 47;
+	splineDest(lineUp, 20);
 
 	driveWall(true, 127);
 	set_inner_goal(gs_down);
