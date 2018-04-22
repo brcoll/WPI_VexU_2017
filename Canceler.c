@@ -9,4 +9,5 @@ task canceler()
 			disabled = false;
 		}
 	}
+	delay(50);
 }

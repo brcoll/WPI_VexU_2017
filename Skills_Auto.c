@@ -11,31 +11,36 @@ void back_out(){
 float slide_t = 0;
 
 void corner_pass(bool is_long, bool is_manual = false){
-	set_odom(-137, 16, 30);
+	if (!is_manual){
+		set_odom(-137, 16, 30);
 
-	back_out();
-	driveDistance(3);
-	set_CB_target(CB_bottom_setpoint);
-	turnAngle(-115);
-	driveWall(false, 70);
+		back_out();
+		driveDistance(3);
+		set_CB_target(CB_bottom_setpoint);
+		turnAngle(-115);
+		driveWall(false, 70);
 
-	slide_t = pos_p.p_t;
+		slide_t = pos_p.p_t;
 
-	if (pos_p.p_t < 87){ // Correct for if you miss line up
-		set_odom(ACP_CP_T, ACP_CP_X, 50);
+		if (pos_p.p_t < 87){ // Correct for if you miss line up
+			set_odom(ACP_CP_T, ACP_CP_X, 50);
+		}
+		else {
+			set_odom(90, ACP_CP_X, 51);
+		}
+
+		set_target(ACP_CP_T, 13, 50.5);
+		driveDistance(0, true);
+		set_target(0, 13.5, 68);
+		turnAngle(0, true);
+		driveDistance(0);
+		grab();
+		set_CB_target(CB_top_setpoint);
 	}
 	else {
-		set_odom(90, ACP_CP_X, 51);
+		set_odom(0, 13.5, 44);
 	}
 
-	set_target(ACP_CP_T, 13, 50.5);
-	driveDistance(0, true);
-	set_target(0, 13.5, 68);
-	turnAngle(0, true);
-	driveDistance(0);
-
-	grab();
-	set_CB_target(CB_top_setpoint);
 	target_p.p_x = 13.5;
 	target_p.p_y = 90;
 	target_p.p_t = 0;
